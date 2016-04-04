@@ -17,9 +17,7 @@ export const composer = ({context}, onData) => {
   const sub = Meteor.subscribe('all');
   if (sub.ready()) {
     const rawDraftContentStates = Collections.RawDraftContentStates.find({}).fetch();
-
     const id = LocalState.get('selectedId');
-    console.log(`id ${id}`);
     const getContentState = () => {
       if (id) {
         const raw = Collections.RawDraftContentStates.findOne(id);
