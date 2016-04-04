@@ -3,8 +3,15 @@ import {RawDraftContentStates} from '/lib/collections';
 
 export default function () {
   Meteor.methods({
-    edit({rawDraftContentState}) {
-      RawDraftContentStates.insert(rawDraftContentState);
+    create({rawDraftContentState}) {
+      const id = RawDraftContentStates.insert(rawDraftContentState);
+      return id;
+    }
+  });
+
+  Meteor.methods({
+    edit({id, rawDraftContentState}) {
+      RawDraftContentStates.update(id, rawDraftContentState);
     }
   });
 }

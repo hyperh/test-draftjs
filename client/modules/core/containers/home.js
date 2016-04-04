@@ -5,21 +5,34 @@ import R from 'ramda';
 
 const depsMapper = (context, actions) => ({
   context: () => context,
-  edit: actions.all.edit
+  create: actions.all.create,
+  edit: actions.all.edit,
+  select: actions.all.select
 });
 
 export const composer = ({context}, onData) => {
-  const {Meteor, Collections} = context();
+  const {Meteor, Collections, LocalState} = context();
+
   const sub = Meteor.subscribe('all');
   if (sub.ready()) {
     const rawDraftContentStates = Collections.RawDraftContentStates.find({}).fetch();
 
-    if (!R.isEmpty(rawDraftContentStates)) {
-      const contentBlocks = convertFromRaw(R.last(rawDraftContentStates));
-      const contentState = ContentState.createFromBlockArray(contentBlocks);
-      onData(null, {contentState});
-    }
-    else { onData(null, {contentState: undefined}); }
+    const id = LocalState.get('selectedId');
+    const getContentState = () => {
+      if (id) {
+        const raw = Collections.RawDraftContentStates.findOne(id);
+        const contentBlocks = convertFromRaw(raw);
+        const contentState = ContentState.createFromBlockArray(contentBlocks);
+        return contentState;
+      }
+      return undefined;
+    };
+    console.log(`home ${id}`);
+    onData(null, {
+      id,
+      contentState: getContentState(),
+      rawDraftContentStates
+    });
   }
 };
 
