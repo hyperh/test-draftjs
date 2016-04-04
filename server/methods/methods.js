@@ -14,4 +14,10 @@ export default function () {
       RawDraftContentStates.update(id, rawDraftContentState);
     }
   });
+
+  Meteor.methods({
+    remove({id}) {
+      RawDraftContentStates.remove(id);
+    }
+  });
 }

@@ -10,6 +10,8 @@ export default class Home extends React.Component {
       editorState: EditorState.createEmpty(),
       isEditing: false
     };
+
+    // id must be bound in render, can't use from constructor props
     this.onChange = (id, editorState) => {
       if (id) {
         this.setState({editorState});
@@ -37,11 +39,14 @@ export default class Home extends React.Component {
   }
 
   render() {
-    const {create, rawDraftContentStates, select, id} = this.props;
+    const {create, rawDraftContentStates, select, id, remove} = this.props;
     const list = () => (
       rawDraftContentStates.map(raw =>
-        <div onClick={select.bind(null, raw._id)}>
-          {raw._id}
+        <div>
+          <span onClick={select.bind(null, raw._id)}>
+            {raw._id}: {raw.blocks.length} blocks, blocks[0]: {raw.blocks[0].text}
+          </span>
+          <span><button onClick={remove.bind(null, raw._id)}>Remove</button></span>
         </div>
       )
     );

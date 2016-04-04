@@ -17,5 +17,12 @@ export default {
 
   select({LocalState}, id) {
     LocalState.set('selectedId', id);
+  },
+
+  remove({Meteor, LocalState}, id) {
+    const selectedId = LocalState.get('selectedId');
+    if (selectedId === id) { LocalState.set('selectedId', undefined); }
+
+    Meteor.call('remove', {id});
   }
 };

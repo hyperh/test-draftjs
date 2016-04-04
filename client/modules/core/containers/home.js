@@ -7,7 +7,8 @@ const depsMapper = (context, actions) => ({
   context: () => context,
   create: actions.all.create,
   edit: actions.all.edit,
-  select: actions.all.select
+  select: actions.all.select,
+  remove: actions.all.remove
 });
 
 export const composer = ({context}, onData) => {
@@ -18,6 +19,7 @@ export const composer = ({context}, onData) => {
     const rawDraftContentStates = Collections.RawDraftContentStates.find({}).fetch();
 
     const id = LocalState.get('selectedId');
+    console.log(`id ${id}`);
     const getContentState = () => {
       if (id) {
         const raw = Collections.RawDraftContentStates.findOne(id);
