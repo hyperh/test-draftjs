@@ -13,8 +13,8 @@ export default class Home extends React.Component {
     };
   }
 
-  _injectChanges() {
-    const {contentState} = this.props;
+  componentWillReceiveProps(nextProps) {
+    const {contentState} = nextProps;
     const {editorState} = this.state;
     const newState = EditorState.push(editorState, contentState);
     this.setState({editorState: newState});
