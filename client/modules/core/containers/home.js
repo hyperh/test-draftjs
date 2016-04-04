@@ -13,10 +13,13 @@ export const composer = ({context}, onData) => {
   const sub = Meteor.subscribe('all');
   if (sub.ready()) {
     const rawDraftContentStates = Collections.RawDraftContentStates.find({}).fetch();
-    const contentBlocks = convertFromRaw(R.last(rawDraftContentStates));
-    const contentState = ContentState.createFromBlockArray(contentBlocks);
-
-    onData(null, {contentState});
+    
+    if (!R.isEmpty(rawDraftContentStates)) {
+      const contentBlocks = convertFromRaw(R.last(rawDraftContentStates));
+      const contentState = ContentState.createFromBlockArray(contentBlocks);
+      onData(null, {contentState});
+    }
+    else { onData(null, {contentState: undefined}); }
   }
 };
 
