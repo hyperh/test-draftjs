@@ -22,6 +22,7 @@
     "sinon": "1.17.x"
   },
   "dependencies": {
+    "draft-js": "^0.3.0",
     "mantra-core": "^1.4.0",
     "meteor-node-stubs": "~0.2.0",
     "react": "^0.14.6",
