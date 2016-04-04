@@ -27,7 +27,7 @@ export const composer = ({context}, onData) => {
       }
       return undefined;
     };
-    
+
     onData(null, {
       id,
       contentState: getContentState(),
