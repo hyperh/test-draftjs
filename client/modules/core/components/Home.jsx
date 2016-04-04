@@ -11,15 +11,17 @@ export default class Home extends React.Component {
       isEditing: false
     };
     this.onChange = (id, editorState) => {
-      this.setState({editorState});
+      if (id) {
+        this.setState({editorState});
 
-      const hasFocus = editorState.getSelection().getHasFocus();
-      this.setState({isEditing: hasFocus});
+        const hasFocus = editorState.getSelection().getHasFocus();
+        this.setState({isEditing: hasFocus});
 
-      const contentState = editorState.getCurrentContent();
-      const rawContentState = convertToRaw(contentState);
+        const contentState = editorState.getCurrentContent();
+        const rawContentState = convertToRaw(contentState);
 
-      edit(id, rawContentState);
+        edit(id, rawContentState);
+      }
     };
   }
 

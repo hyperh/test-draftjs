@@ -27,7 +27,7 @@ export const composer = ({context}, onData) => {
       }
       return undefined;
     };
-    console.log(`home ${id}`);
+    
     onData(null, {
       id,
       contentState: getContentState(),
