@@ -1,5 +1,5 @@
 export default {
-  edit({Meteor, Collections, FlowRouter}, editorState) {
-    Meteor.call('edit', {editorState});
+  edit({Meteor, Collections, FlowRouter}, rawDraftContentState) {
+    Meteor.call('edit', {rawDraftContentState});
   }
 };

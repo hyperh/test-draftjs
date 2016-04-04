@@ -1,5 +1,5 @@
 import React from 'react';
-import {Editor, EditorState} from 'draft-js';
+import {Editor, EditorState, convertToRaw} from 'draft-js';
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -9,7 +9,11 @@ export default class Home extends React.Component {
     this.state = {editorState: EditorState.createEmpty()};
     this.onChange = (editorState) => {
       this.setState({editorState});
-      edit(editorState);
+
+      const contentState = editorState.getCurrentContent();
+      const rawContentState = convertToRaw(contentState);
+
+      edit(rawContentState);
     };
   }
 

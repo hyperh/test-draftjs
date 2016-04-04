@@ -1,10 +1,10 @@
 import {Meteor} from 'meteor/meteor';
-import {EditorStates} from '/lib/collections';
+import {RawDraftContentStates} from '/lib/collections';
 
 export default function () {
   Meteor.methods({
-    edit({editorState}) {
-      EditorStates.insert(editorState);
+    edit({rawDraftContentState}) {
+      RawDraftContentStates.insert(rawDraftContentState);
     }
   });
 }

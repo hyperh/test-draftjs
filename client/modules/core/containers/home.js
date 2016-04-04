@@ -1,5 +1,7 @@
 import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
 import Home from '../components/Home.jsx';
+import {convertFromRaw} from 'draft-js';
+import R from 'ramda';
 
 const depsMapper = (context, actions) => ({
   context: () => context,
@@ -8,10 +10,12 @@ const depsMapper = (context, actions) => ({
 
 export const composer = ({context}, onData) => {
   const {Meteor, FlowRouter, Collections} = context();
-  const sub = Meteor.subscribe('editorStates');
+  const sub = Meteor.subscribe('all');
   if (sub.ready()) {
-    const editorStates = Collections.EditorStates.find({}).fetch();
-    onData(null, {editorStates});
+    const rawDraftContentStates = Collections.RawDraftContentStates.find({}).fetch();
+    const contentState = convertFromRaw(R.last(rawDraftContentStates));
+
+    onData(null, {contentState});
   }
 };
 
