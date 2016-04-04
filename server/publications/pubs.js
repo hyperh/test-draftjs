@@ -1,10 +1,11 @@
-import {RawDraftContentStates} from '/lib/collections';
+import * as Collections from '/lib/collections';
 import {Meteor} from 'meteor/meteor';
 
 export default function () {
   Meteor.publish('all', function () {
     return [
-      RawDraftContentStates.find({})
+      Collections.RawDraftContentStates.find({}),
+      Collections.Locks.find({})
     ];
   });
 }
