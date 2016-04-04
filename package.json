@@ -4,6 +4,10 @@
   "scripts": {
     "start": "meteor run"
   },
+  "devDependencies": {
+    "eslint": "1.10.x",
+    "eslint-plugin-react": "3.15.x"
+  },
   "dependencies": {
     "meteor-node-stubs": "~0.2.0"
   }
