@@ -1,8 +1,8 @@
-import {Blocks} from '/lib/collections';
+import {EditorStates} from '/lib/collections';
 import {Meteor} from 'meteor/meteor';
 
 export default function () {
-  Meteor.publish('blocks', function () {
-    return Blocks.find({});
+  Meteor.publish('editorStates', function () {
+    return EditorStates.find({});
   });
 }

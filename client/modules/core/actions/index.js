@@ -1,5 +1,5 @@
-import blocks from './blocks';
+import all from './all';
 
 export default {
-  blocks
+  all
 };

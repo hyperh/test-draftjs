@@ -1,9 +1,10 @@
 import {Meteor} from 'meteor/meteor';
+import {EditorStates} from '/lib/collections';
 
 export default function () {
   Meteor.methods({
-    test() {
-      
+    edit({editorState}) {
+      EditorStates.insert(editorState);
     }
   });
 }

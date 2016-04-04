@@ -1,14 +1,18 @@
-import React from 'react';
 import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
 import Home from '../components/Home.jsx';
 
 const depsMapper = (context, actions) => ({
-  context: () => context
+  context: () => context,
+  edit: actions.all.edit
 });
 
 export const composer = ({context}, onData) => {
   const {Meteor, FlowRouter, Collections} = context();
-  onData(null, {});
+  const sub = Meteor.subscribe('editorStates');
+  if (sub.ready()) {
+    const editorStates = Collections.EditorStates.find({}).fetch();
+    onData(null, {editorStates});
+  }
 };
 
 export default composeAll(

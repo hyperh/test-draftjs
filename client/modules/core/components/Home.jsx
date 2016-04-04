@@ -4,8 +4,13 @@ import {Editor, EditorState} from 'draft-js';
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
+    const {edit} = this.props;
+
     this.state = {editorState: EditorState.createEmpty()};
-    this.onChange = (editorState) => this.setState({editorState});
+    this.onChange = (editorState) => {
+      this.setState({editorState});
+      edit(editorState);
+    };
   }
 
   render() {
