@@ -9,11 +9,11 @@ const depsMapper = (context, actions) => ({
 });
 
 export const composer = ({context}, onData) => {
-  const {Meteor, FlowRouter, Collections} = context();
+  const {Meteor, Collections} = context();
   const sub = Meteor.subscribe('all');
   if (sub.ready()) {
     const rawDraftContentStates = Collections.RawDraftContentStates.find({}).fetch();
-    
+
     if (!R.isEmpty(rawDraftContentStates)) {
       const contentBlocks = convertFromRaw(R.last(rawDraftContentStates));
       const contentState = ContentState.createFromBlockArray(contentBlocks);

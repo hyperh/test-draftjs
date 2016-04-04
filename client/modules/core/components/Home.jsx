@@ -9,9 +9,9 @@ export default class Home extends React.Component {
     this.state = {editorState: EditorState.createEmpty(), isEditing: false};
     this.onChange = (editorState) => {
       this.setState({editorState});
-      
+
       const hasFocus = editorState.getSelection().getHasFocus();
-      this.setState({isEditing: hasFocus ? true : false});
+      this.setState({isEditing: hasFocus});
 
       const contentState = editorState.getCurrentContent();
       const rawContentState = convertToRaw(contentState);
@@ -21,7 +21,7 @@ export default class Home extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(!this.state.isEditing) {
+    if (!this.state.isEditing) {
       const {contentState} = nextProps;
       const {editorState} = this.state;
       const newState = EditorState.push(editorState, contentState);
