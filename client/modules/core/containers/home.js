@@ -12,8 +12,6 @@ export const composer = ({context}, onData) => {
 };
 
 export default composeAll(
-  composeWithTracker(composer, function () {
-    return React.createElement('div', null);
-  }),
+  composeWithTracker(composer),
   useDeps(depsMapper)
 )(Home);
