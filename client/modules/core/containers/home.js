@@ -1,6 +1,6 @@
 import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
 import Home from '../components/Home.jsx';
-import {convertFromRaw} from 'draft-js';
+import {convertFromRaw, ContentState} from 'draft-js';
 import R from 'ramda';
 
 const depsMapper = (context, actions) => ({
@@ -13,7 +13,8 @@ export const composer = ({context}, onData) => {
   const sub = Meteor.subscribe('all');
   if (sub.ready()) {
     const rawDraftContentStates = Collections.RawDraftContentStates.find({}).fetch();
-    const contentState = convertFromRaw(R.last(rawDraftContentStates));
+    const contentBlocks = convertFromRaw(R.last(rawDraftContentStates));
+    const contentState = ContentState.createFromBlockArray(contentBlocks);
 
     onData(null, {contentState});
   }
