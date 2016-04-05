@@ -47,6 +47,8 @@ export default class Home extends React.Component {
       create, rawDraftContentStates, select, rawId, remove, login, user, selectedLock
     } = this.props;
 
+    const readOnly = selectedLock ? selectedLock.userId !== user._id : false;
+
     return (
       <div id="main-page">
         <Login login={login} user={user} />
@@ -56,6 +58,7 @@ export default class Home extends React.Component {
           <Editor
             editorState={this.state.editorState}
             onChange={this.onChange.bind(this, rawId)}
+            readOnly={readOnly}
           />
         </div>
         <button onClick={create}>New editor</button>
