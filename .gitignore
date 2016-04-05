@@ -6,3 +6,4 @@ ssl.pem
 node_modules
 *.log
 mup.json
+logs.*

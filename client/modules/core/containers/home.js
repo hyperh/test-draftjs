@@ -42,7 +42,7 @@ export const composer = ({context}, onData) => {
       rawId,
       contentState: getContentState(),
       rawDraftContentStates,
-      user: Meteor.user(),
+      user: LocalState.get('fakeUser'), // Meteor.user(),
       selectedLock: getSelectedLock()
     });
   }
