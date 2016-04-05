@@ -20,22 +20,30 @@ export const composer = ({context}, onData) => {
   const sub = Meteor.subscribe('all');
   if (sub.ready()) {
     const rawDraftContentStates = Collections.RawDraftContentStates.find({}).fetch();
-    const id = LocalState.get('selectedId');
+    const rawId = LocalState.get('selectedId');
     const getContentState = () => {
-      if (id) {
-        const raw = Collections.RawDraftContentStates.findOne(id);
+      if (rawId) {
+        const raw = Collections.RawDraftContentStates.findOne(rawId);
         const contentBlocks = convertFromRaw(raw);
         const contentState = ContentState.createFromBlockArray(contentBlocks);
         return contentState;
       }
       return undefined;
     };
+    const getSelectedLock = () => {
+      if (rawId) {
+        const lock = Collections.Locks.findOne({rawId});
+        return lock;
+      }
+      return undefined;
+    };
 
     onData(null, {
-      id,
+      rawId,
       contentState: getContentState(),
       rawDraftContentStates,
-      user: Meteor.user()
+      user: Meteor.user(),
+      selectedLock: getSelectedLock()
     });
   }
 };

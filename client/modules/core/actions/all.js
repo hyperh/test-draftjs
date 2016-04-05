@@ -26,12 +26,12 @@ export default {
     Meteor.call('remove', {id});
   },
 
-  lock({Meteor}, id) {
-    Meteor.call('lock', {id});
+  lock({Meteor}, rawId) {
+    Meteor.call('lock', {rawId});
   },
 
-  unlock({Meteor}, id) {
-    Meteor.call('unlock', {id});
+  unlock({Meteor}, rawId) {
+    Meteor.call('unlock', {rawId});
   },
 
   login({Meteor, LocalState, FlowRouter}, usernameOrEmail, password) {

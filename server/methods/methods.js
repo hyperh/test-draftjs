@@ -22,19 +22,22 @@ export default function () {
   });
 
   Meteor.methods({
-    lock({id}) {
+    lock({rawId}) {
       const userId = this.userId;
-      const locks = Locks.find({id});
+      const locks = Locks.find({rawId});
       const locked = locks.count() > 1;
 
-      if (!locked) { Locks.insert({id, userId}); }
+      const user = Meteor.users.findOne(userId);
+      const username = user.username;
+
+      if (!locked) { Locks.insert({rawId, userId, username}); }
     }
   });
 
   Meteor.methods({
-    unlock({id}) {
+    unlock({rawId}) {
       const userId = this.userId;
-      Locks.remove({id, userId});
+      Locks.remove({rawId, userId});
     }
   });
 
