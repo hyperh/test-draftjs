@@ -8,7 +8,10 @@ const depsMapper = (context, actions) => ({
   create: actions.all.create,
   edit: actions.all.edit,
   select: actions.all.select,
-  remove: actions.all.remove
+  remove: actions.all.remove,
+  lock: actions.all.lock,
+  unlock: actions.all.unlock,
+  login: actions.all.login
 });
 
 export const composer = ({context}, onData) => {
@@ -31,7 +34,8 @@ export const composer = ({context}, onData) => {
     onData(null, {
       id,
       contentState: getContentState(),
-      rawDraftContentStates
+      rawDraftContentStates,
+      user: Meteor.user()
     });
   }
 };

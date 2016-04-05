@@ -26,3 +26,6 @@ meteortoys:allthings
 
 meteorhacks:subs-manager
 kadira:debug
+accounts-base
+accounts-ui
+accounts-password

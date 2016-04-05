@@ -24,5 +24,20 @@ export default {
     if (selectedId === id) { LocalState.set('selectedId', undefined); }
 
     Meteor.call('remove', {id});
-  }
+  },
+
+  lock({Meteor}, id) {
+    Meteor.call('lock', {id});
+  },
+
+  unlock({Meteor}, id) {
+    Meteor.call('unlock', {id});
+  },
+
+  login({Meteor, LocalState, FlowRouter}, usernameOrEmail, password) {
+    Meteor.loginWithPassword(usernameOrEmail, password, (err) => {
+      if (err) { alert(err); }
+    });
+
+  },
 };

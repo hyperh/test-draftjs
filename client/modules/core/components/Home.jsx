@@ -1,10 +1,11 @@
 import React from 'react';
 import {Editor, EditorState, convertToRaw} from 'draft-js';
+import Login from './Login.jsx';
 
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
-    const {edit} = this.props;
+    const {edit, lock, unlock} = this.props;
 
     this.state = {
       editorState: EditorState.createEmpty(),
@@ -18,6 +19,8 @@ export default class Home extends React.Component {
 
         const hasFocus = editorState.getSelection().getHasFocus();
         this.setState({isEditing: hasFocus});
+        if (hasFocus) { lock(id); }
+        else { unlock(id); }
 
         const contentState = editorState.getCurrentContent();
         const rawContentState = convertToRaw(contentState);
@@ -39,7 +42,9 @@ export default class Home extends React.Component {
   }
 
   render() {
-    const {create, rawDraftContentStates, select, id, remove} = this.props;
+    const {
+      create, rawDraftContentStates, select, id, remove, login, user
+    } = this.props;
     const list = () => (
       rawDraftContentStates.map(raw =>
         <div>
@@ -53,6 +58,7 @@ export default class Home extends React.Component {
 
     return (
       <div id="main-page">
+        <Login login={login} user={user} />
         <h1>Draft.js Editor {id}</h1>
         <div className="editor">
           <Editor
