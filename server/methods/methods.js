@@ -14,7 +14,7 @@ export default function () {
       RawDraftContentStates.update(rawId, rawDraftContentState);
       const lock = Locks.findOne({rawId, userId: user._id});
       if (lock) {
-        lock.update(lock._id, { $set: { updatedAt: new Date() } });
+        Locks.update(lock._id, { $set: { updatedAt: new Date() } });
       }
     }
   });
@@ -28,15 +28,21 @@ export default function () {
   Meteor.methods({
     requestLock({rawId, user}) {
       // const userId = this.userId;
+
       const userId = user._id;
       const lock = Locks.findOne({rawId});
       const locked = lock ? true : false;
 
+      const timeout = 5000;
+      const timeDiff = lock ? new Date() - lock.updatedAt : timeout + 1;
+
       // const user = Meteor.users.findOne(userId);
       const username = user.username;
 
-      if (!locked || new Date() - lock.updatedAt > 5000) {
-        Locks.insert({rawId, userId, username});
+      if (!locked || timeDiff >= timeout) {
+        Locks.upsert({rawId},
+          { $set: {userId, username, updatedAt: new Date()} }
+        );
       }
     }
   });

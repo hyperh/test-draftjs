@@ -30,7 +30,7 @@ export default class Home extends React.Component {
       this.setState({isEditing: hasFocus && canEdit});
 
       if (this.state.releaseLockOnBlur) {
-        if (!hasFocus) { releaseLock(rawId, user); }  
+        if (!hasFocus) { releaseLock(rawId, user); }
       }
 
       const contentState = editorState.getCurrentContent();
