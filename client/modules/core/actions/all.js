@@ -80,9 +80,9 @@ export default {
     }
   },
 
-  editBlock({Meteor}, rawId, rawContentState, user, blockKey) {
+  editBlock({Meteor}, rawId, user, rawDraftContentState, block) {
     if (user) {
-      Meteor.call('editBlock', {rawId, rawContentState, user, blockKey});
+      Meteor.call('editBlock', {rawId, user, rawDraftContentState, block});
     }
   }
 };

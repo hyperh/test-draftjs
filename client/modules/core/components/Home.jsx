@@ -42,28 +42,30 @@ export default class Home extends React.Component {
 
       const hasFocus = selectionState.getHasFocus();
       console.log(`hasFocus ${hasFocus}`);
+      this.setState({isEditing: true});
       if (this.state.releaseLockOnBlur) {
         if (!hasFocus) { releaseBlockLocks(user); }
       }
 
       const contentState = editorState.getCurrentContent();
-      const rawContentState = convertToRaw(contentState);
+      const rawDraftContentState = convertToRaw(contentState);
+      const block = R.find(R.propEq('key', anchorKey), rawDraftContentState.blocks);
 
-      // editBlock(rawId, rawContentState, user, blockKey);
+      editBlock(rawId, user, rawDraftContentState, block);
 
       console.log(`anchorKey ${anchorKey}, focusKey ${focusKey}`);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    // if (!this.state.isEditing) {
-    //   const {contentState} = nextProps;
-    //   if (contentState) {
-    //     const {editorState} = this.state;
-    //     const newState = EditorState.push(editorState, contentState);
-    //     this.setState({editorState: newState});
-    //   }
-    // }
+    if (!this.state.isEditing) {
+      const {contentState} = nextProps;
+      if (contentState) {
+        const {editorState} = this.state;
+        const newState = EditorState.push(editorState, contentState);
+        this.setState({editorState: newState});
+      }
+    }
   }
 
   render() {
@@ -108,15 +110,16 @@ export default class Home extends React.Component {
 
 function isBlockLocked(contentBlock, callback) {
   const {locks, user} = this.props;
+  if (user) {
+    const lockedByOthers = R.filter(lock => lock.userId !== user._id, locks);
+    const lockedBlocks = lockedByOthers.map(lock => lock.blockKey);
 
-  const lockedByOthers = R.filter(lock => lock.userId !== user._id, locks);
-  const lockedBlocks = lockedByOthers.map(lock => lock.blockKey);
-
-  const currentBlockKey = contentBlock.getKey();
-  const isLocked = R.contains(currentBlockKey, lockedBlocks);
-  if (isLocked) {
-    callback(0, contentBlock.getLength());
-    return;
+    const currentBlockKey = contentBlock.getKey();
+    const isLocked = R.contains(currentBlockKey, lockedBlocks);
+    if (isLocked) {
+      callback(0, contentBlock.getLength());
+      return;
+    }
   }
 }
 

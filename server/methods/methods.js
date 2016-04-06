@@ -1,5 +1,6 @@
 import {Meteor} from 'meteor/meteor';
 import {RawDraftContentStates, Locks} from '/lib/collections';
+import R from 'ramda';
 
 export default function () {
   Meteor.methods({
@@ -72,6 +73,19 @@ export default function () {
           { $set: {userId, username, updatedAt: new Date()} }
         );
       }
+    }
+  });
+
+  Meteor.methods({
+    editBlock({rawId, user, rawDraftContentState, block}) {
+      console.log(block);
+
+      RawDraftContentStates.update(rawId, rawDraftContentState);
+      const lock = Locks.findOne({blockKey: block.key, userId: user._id});
+      if (lock) {
+        Locks.update(lock._id, { $set: { updatedAt: new Date() } });
+      }
+
     }
   });
 
