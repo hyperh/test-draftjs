@@ -1,5 +1,6 @@
 import React from 'react';
-import {Editor, EditorState, convertToRaw} from 'draft-js';
+import R from 'ramda';
+import {Editor, EditorState, convertToRaw, CompositeDecorator} from 'draft-js';
 import Login from './Login.jsx';
 import ListItem from './ListItem.jsx';
 
@@ -7,8 +8,15 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
 
+    const decorator = new CompositeDecorator([
+      {
+        strategy: isBlockLocked.bind(this),
+        component: LockedBlock,
+      },
+    ]);
+
     this.state = {
-      editorState: EditorState.createEmpty(),
+      editorState: EditorState.createEmpty(decorator),
       isEditing: false,
       releaseLockOnBlur: true
     };
@@ -59,6 +67,12 @@ export default class Home extends React.Component {
     requestLock(rawId, user, () => this.editor.focus());
   }
 
+  setLockedBlock() {
+    const blockId = this._lockBlockId.value;
+    this.lockedBlock = blockId;
+    console.log(this.lockedBlock);
+  }
+
   render() {
     const {
       create, rawDraftContentStates, select, rawId, remove, login, user, canEdit, lock
@@ -87,6 +101,8 @@ export default class Home extends React.Component {
             ref={ref => this.editor = ref}
           />
         </div>
+        <input type="text" ref={ x => this._lockBlockId = x } />
+        <button onClick={this.setLockedBlock.bind(this)}>Set Locked Block</button>
         <button onClick={create}>New editor</button>
         {rawDraftContentStates.map(
           raw => {
@@ -99,3 +115,22 @@ export default class Home extends React.Component {
     );
   }
 }
+
+function isBlockLocked(contentBlock, callback) {
+  // const lockedBlocks = this.props.lockedBlockKeys;
+  const lockedBlocks = [ this.lockedBlock ];
+  const currentBlockKey = contentBlock.getKey();
+  const isBlocked = R.contains(currentBlockKey, lockedBlocks);
+  if (isBlocked) {
+    callback(0, contentBlock.getLength());
+    return;
+  }
+}
+
+const LockedBlock = (props) => {
+  return (
+    <div contentEditable={false} style={{color: 'red'}}>
+      {props.children}
+    </div>
+  );
+};
