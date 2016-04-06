@@ -48,7 +48,7 @@ export default class Home extends React.Component {
 
   render() {
     const {
-      create, rawDraftContentStates, select, rawId, remove, login, user, canEdit
+      create, rawDraftContentStates, select, rawId, remove, login, user, canEdit, lock
     } = this.props;
 
     return (
@@ -59,6 +59,7 @@ export default class Home extends React.Component {
 
         <h1>Draft.js Editor {rawId}</h1>
         {rawId && !canEdit ? `Locked` : null}
+        {lock && !canEdit ? ` by ${lock.username}` : null}
         <div className="editor" onClick={this.editorClick.bind(this)}>
           <Editor
             editorState={this.state.editorState}

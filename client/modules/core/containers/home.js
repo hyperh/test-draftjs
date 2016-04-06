@@ -41,12 +41,21 @@ export const composer = ({context}, onData) => {
       return false;
     };
 
+    const getLock = () => {
+      if (rawId) {
+        const lock = Collections.Locks.findOne({rawId});
+        return lock;
+      }
+      return undefined;
+    };
+
     onData(null, {
       rawId,
       contentState: getContentState(),
       rawDraftContentStates,
       user,
-      canEdit: getCanEdit()
+      canEdit: getCanEdit(),
+      lock: getLock()
     });
   }
 };
