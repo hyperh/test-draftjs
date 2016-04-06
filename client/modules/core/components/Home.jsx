@@ -19,6 +19,9 @@ export default class Home extends React.Component {
       this.setState({editorState});
 
       const selectionState = editorState.getSelection();
+
+      // If highlight text, anchor is start of selection, focus is end
+      // If no highlight, then anchor = focus
       const anchorKey = selectionState.getAnchorKey();
       const focusKey = selectionState.getFocusKey();
 
