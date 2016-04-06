@@ -53,7 +53,6 @@ export default class Home extends React.Component {
   componentWillReceiveProps(nextProps) {
     if (!this.state.isEditing) {
       const {contentState} = nextProps;
-      console.log(contentState.getBlockMap());
       if (contentState) {
         const {editorState} = this.state;
         const newState = EditorState.push(editorState, contentState);
