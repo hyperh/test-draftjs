@@ -90,8 +90,8 @@ export default class Home extends React.Component {
           </button>
         </div>
 
-        {rawId && !canEdit ? `Locked` : null}
-        {lock && !canEdit ? ` by ${lock.username}` : null}
+        {rawId && lock && !canEdit ? `Locked by ${lock.username}` : null}
+        {lock && canEdit ? `I can edit.` : null}
         <div className="editor" onClick={this.editorClick.bind(this)}>
           <Editor
             editorState={this.state.editorState}
