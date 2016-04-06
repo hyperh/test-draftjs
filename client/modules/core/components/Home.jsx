@@ -10,7 +10,7 @@ export default class Home extends React.Component {
 
     const decorator = new CompositeDecorator([
       {
-        strategy: isBlockLocked.bind(this),
+        strategy: this.isBlockLocked.bind(this),
         component: LockedBlock,
       },
     ]);
@@ -18,8 +18,25 @@ export default class Home extends React.Component {
     this.state = {
       editorState: EditorState.createEmpty(decorator),
       isEditing: false,
-      releaseLockOnBlur: true
+      releaseLockOnBlur: true,
     };
+    this.lockedKeys = [];
+  }
+
+  isBlockLocked(contentBlock, callback) {
+    const {user} = this.props;
+    const locks = this.lockedKeys;
+    if (user && locks.length > 0) {
+      const lockedByOthers = R.filter(lock => lock.userId !== user._id, locks);
+      const lockedBlocks = lockedByOthers.map(lock => lock.blockKey);
+
+      const currentBlockKey = contentBlock.getKey();
+      const isLocked = R.contains(currentBlockKey, lockedBlocks);
+      if (isLocked) {
+        callback(0, contentBlock.getLength());
+        return;
+      }
+    }
   }
 
   onChange(rawId, editorState) {
@@ -61,9 +78,10 @@ export default class Home extends React.Component {
     if (!this.state.isEditing) {
       const {contentState} = nextProps;
       if (contentState) {
+        this.lockedKeys = nextProps.locks;
         const {editorState} = this.state;
         const newState = EditorState.push(editorState, contentState);
-        this.setState({editorState: newState});
+        setTimeout(this.setState({editorState: newState}), 10);
       }
     }
   }
@@ -105,21 +123,6 @@ export default class Home extends React.Component {
         )}
       </div>
     );
-  }
-}
-
-function isBlockLocked(contentBlock, callback) {
-  const {locks, user} = this.props;
-  if (user) {
-    const lockedByOthers = R.filter(lock => lock.userId !== user._id, locks);
-    const lockedBlocks = lockedByOthers.map(lock => lock.blockKey);
-
-    const currentBlockKey = contentBlock.getKey();
-    const isLocked = R.contains(currentBlockKey, lockedBlocks);
-    if (isLocked) {
-      callback(0, contentBlock.getLength());
-      return;
-    }
   }
 }
 
