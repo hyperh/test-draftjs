@@ -18,7 +18,11 @@ export default class Home extends React.Component {
     if (rawId) {
       this.setState({editorState});
 
-      const hasFocus = editorState.getSelection().getHasFocus();
+      const selectionState = editorState.getSelection();
+      const anchorKey = selectionState.getAnchorKey();
+      const focusKey = selectionState.getFocusKey();
+
+      const hasFocus = selectionState.getHasFocus();
       this.setState({isEditing: hasFocus && canEdit});
 
       if (!hasFocus) { releaseLock(rawId, user); }
@@ -27,6 +31,8 @@ export default class Home extends React.Component {
       const rawContentState = convertToRaw(contentState);
 
       edit(rawId, rawContentState);
+
+      console.log(`anchorKey ${anchorKey}, focusKey ${focusKey}`);
     }
   }
 
