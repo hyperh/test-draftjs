@@ -35,10 +35,10 @@ export const composer = ({context}, onData) => {
     const getCanEdit = () => {
       if (rawId) {
         const lock = Collections.Locks.findOne({rawId});
-        if (lock) { return lock.userId === user._id; }
-        return undefined;
+        if (lock && user) { return lock.userId === user._id; }
+        return false;
       }
-      return undefined;
+      return false;
     };
 
     onData(null, {

@@ -14,15 +14,14 @@ export default class Home extends React.Component {
   }
 
   onChange(rawId, editorState) {
-    const {edit, requestLock, releaseLock, user} = this.props;
+    const {edit, releaseLock, user, canEdit} = this.props;
     if (rawId) {
       this.setState({editorState});
 
       const hasFocus = editorState.getSelection().getHasFocus();
-      this.setState({isEditing: hasFocus});
+      this.setState({isEditing: hasFocus && canEdit});
 
-      if (hasFocus) { requestLock(rawId, user); }
-      else { releaseLock(rawId, user); }
+      if (!hasFocus) { releaseLock(rawId, user); }
 
       const contentState = editorState.getCurrentContent();
       const rawContentState = convertToRaw(contentState);
@@ -42,6 +41,11 @@ export default class Home extends React.Component {
     }
   }
 
+  editorClick() {
+    const {requestLock, rawId, user} = this.props;
+    requestLock(rawId, user, () => this.editor.focus());
+  }
+
   render() {
     const {
       create, rawDraftContentStates, select, rawId, remove, login, user, canEdit
@@ -50,12 +54,17 @@ export default class Home extends React.Component {
     return (
       <div id="main-page">
         <Login login={login} user={user} />
+        <button onClick={login.bind(null, 'alice', 1)}>Alice</button>
+        <button onClick={login.bind(null, 'bob', 1)}>Bob</button>
+
         <h1>Draft.js Editor {rawId}</h1>
         {rawId && !canEdit ? `Locked` : null}
-        <div className="editor">
+        <div className="editor" onClick={this.editorClick.bind(this)}>
           <Editor
             editorState={this.state.editorState}
             onChange={this.onChange.bind(this, rawId)}
+            readOnly={!canEdit}
+            ref={ref => this.editor = ref}
           />
         </div>
         <button onClick={create}>New editor</button>

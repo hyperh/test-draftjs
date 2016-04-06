@@ -24,10 +24,9 @@ export default function () {
   Meteor.methods({
     requestLock({rawId, user}) {
       // const userId = this.userId;
-      console.log(user);
       const userId = user._id;
       const locks = Locks.find({rawId});
-      const locked = locks.count() > 1;
+      const locked = locks.count() > 0;
 
       // const user = Meteor.users.findOne(userId);
       const username = user.username;
@@ -41,7 +40,6 @@ export default function () {
   Meteor.methods({
     releaseLock({rawId, user}) {
       // const userId = this.userId;
-      console.log(user);
       const userId = user._id;
       Locks.remove({rawId, userId});
     }
