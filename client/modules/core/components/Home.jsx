@@ -75,30 +75,62 @@ export default class Home extends React.Component {
   }
 
   _currentlySelectedBlocks() {
-    // TODO - return the blocks selected by current user
-    return [];
+    const { editorState } = this.state;
+
+    const selectionState = editorState.getSelection();
+    const start = selectionState.getStartKey();
+    const end = selectionState.getEndKey();
+
+    const contentState = editorState.getCurrentContent();
+    const blockArray = contentState.getBlocksAsArray();
+
+    // maybe find a way to refactor this ugly for loop
+    let selectedBlocks = [];
+    let inRange = false;
+    for (var i = blockArray.length - 1; i >= 0; i--) {
+      if (blockArray[i].getKey() === start) {
+        inRange = true;
+      }
+      if (inRange) {
+        selectedBlocks.push(blockArray[i]);
+      }
+      if (blockArray[i].getKey() === end) {
+        inRange = false;
+      }
+    }
+
+    return selectedBlocks;
+  }
+
+  _mergeBlockArrays(newBlocks, selectedBlocks) {
+    const contentState = this.state.editorState.getCurrentContent();
+    return newBlocks.map( block => {
+      const key = block.getKey();
+      const isSelected = R.contains(key, selectedBlocks.map(x => x.getKey()));
+
+      // for each new block, check if any of them are currently selected
+      if (isSelected) {
+        return contentState.getBlockForKey(key);  // if so, use block from client side
+      }
+      return block; // otherwise, use block from server
+    });
   }
 
   _injectChanges(contentState) {
+    // Getting current data
     const { editorState } = this.state;
-    const selectionState = editorState.getSelection();
+    const currentSelectionState = editorState.getSelection();
 
-    const contentBlocks = contentState.getBlocksAsArray();
-    const selectedBlocks = this._currentlySelectedBlocks.bind(this)();
-    const selectedBlockKeys = selectedBlocks.map( block => block.getKey() );
+    // Get the two block arrays and then merge them to form a new one
+    const newContentBlocks = contentState.getBlocksAsArray();             // from server
+    const selectedBlocks = this._currentlySelectedBlocks.bind(this)();    // from user focus
+    const newBlockArray = this._mergeBlockArrays.bind(this)(newContentBlocks, selectedBlocks);
 
-    const newBlockArray = contentBlocks.map( block => {
-      const key = block.getKey();
-      const isSelected = R.contains(key, selectedBlockKeys);
-      if (isSelected) {
-        return selectedBlocks[key];
-      }
-      return block;
-    });
-
+    // Wrapping it all back up into an EditorState object
     const newContentState = ContentState.createFromBlockArray(newBlockArray);
     const newEditorState = EditorState.push(editorState, newContentState);
-    const newState = EditorState.forceSelection(newEditorState, selectionState);
+    const newState = EditorState.forceSelection(newEditorState, currentSelectionState);
+
     this.setState({editorState: newState});
   }
 
