@@ -81,7 +81,7 @@ export default class Home extends React.Component {
         this.lockedKeys = nextProps.locks;
         const {editorState} = this.state;
         const newState = EditorState.push(editorState, contentState);
-        setTimeout(this.setState({editorState: newState}), 10);
+        this.setState({editorState: newState})
       }
     }
   }
