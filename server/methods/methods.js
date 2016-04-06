@@ -56,18 +56,6 @@ export default function () {
   });
 
   Meteor.methods({
-    takeLock({rawId, user}) {
-      const userId = user._id;
-      const lock = Locks.findOne({rawId});
-
-      if (new Date() - lock.updatedAt > 5000) {
-        Locks.remove({rawId});
-        Locks.insert({rawId, userId});
-      }
-    }
-  });
-
-  Meteor.methods({
     '_wipeAndInitialize'() {
       RawDraftContentStates.remove({});
       Locks.remove({});
