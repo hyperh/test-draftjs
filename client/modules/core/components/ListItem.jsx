@@ -2,7 +2,7 @@ import React from 'react';
 
 export default class ListItem extends React.Component {
   render() {
-    const {raw, select, remove, locked} = this.props;
+    const {raw, select, remove} = this.props;
     return (
       <div>
         <span onClick={select.bind(null, raw._id)}>

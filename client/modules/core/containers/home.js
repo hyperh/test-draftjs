@@ -11,7 +11,8 @@ const depsMapper = (context, actions) => ({
   remove: actions.all.remove,
   requestLock: actions.all.requestLock,
   releaseLock: actions.all.releaseLock,
-  login: actions.all.login
+  login: actions.all.login,
+  takeOver: actions.all.takeOver
 });
 
 export const composer = ({context}, onData) => {

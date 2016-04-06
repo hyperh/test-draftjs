@@ -4,20 +4,24 @@ import {RawDraftContentStates, Locks} from '/lib/collections';
 export default function () {
   Meteor.methods({
     create({rawDraftContentState}) {
-      const id = RawDraftContentStates.insert(rawDraftContentState);
-      return id;
+      const rawId = RawDraftContentStates.insert(rawDraftContentState);
+      return rawId;
     }
   });
 
   Meteor.methods({
-    edit({id, rawDraftContentState}) {
-      RawDraftContentStates.update(id, rawDraftContentState);
+    edit({rawId, rawDraftContentState, user}) {
+      RawDraftContentStates.update(rawId, rawDraftContentState);
+      const lock = Locks.findOne({rawId, userId: user._id});
+      if (lock) {
+        lock.update(lock._id, { $set: { updatedAt: new Date() } });
+      }
     }
   });
 
   Meteor.methods({
-    remove({id}) {
-      RawDraftContentStates.remove(id);
+    remove({rawId}) {
+      RawDraftContentStates.remove(rawId);
     }
   });
 
@@ -25,13 +29,13 @@ export default function () {
     requestLock({rawId, user}) {
       // const userId = this.userId;
       const userId = user._id;
-      const locks = Locks.find({rawId});
-      const locked = locks.count() > 0;
+      const lock = Locks.findOne({rawId});
+      const locked = lock ? true : false;
 
       // const user = Meteor.users.findOne(userId);
       const username = user.username;
 
-      if (!locked) {
+      if (!locked || new Date() - lock.updatedAt > 5000) {
         Locks.insert({rawId, userId, username});
       }
     }
@@ -42,6 +46,18 @@ export default function () {
       // const userId = this.userId;
       const userId = user._id;
       Locks.remove({rawId, userId});
+    }
+  });
+
+  Meteor.methods({
+    takeLock({rawId, user}) {
+      const userId = user._id;
+      const lock = Locks.findOne({rawId});
+
+      if (new Date() - lock.updatedAt > 5000) {
+        Locks.remove({rawId});
+        Locks.insert({rawId, userId});
+      }
     }
   });
 

@@ -11,8 +11,8 @@ export default {
     });
   },
 
-  edit({Meteor}, id, rawDraftContentState) {
-    Meteor.call('edit', {id, rawDraftContentState});
+  edit({Meteor}, rawId, rawDraftContentState, user) {
+    Meteor.call('edit', {rawId, rawDraftContentState, user});
   },
 
   select({LocalState}, id) {
