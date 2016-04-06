@@ -10,7 +10,7 @@ export default class ListItem extends React.Component {
         </span>
         <span><button onClick={remove.bind(null, raw._id)}>Remove</button></span>
         {
-          selectedRawId ?
+          selectedRawId === raw._id ?
           <div>
             {raw.blocks.map(block => (
               <div style={{marginLeft: '10px'}}>{block.key}: {block.text}</div>
