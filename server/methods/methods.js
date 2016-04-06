@@ -58,8 +58,6 @@ export default function () {
 
   Meteor.methods({
     requestBlockLock({blockKey, user}) {
-      Meteor.call('releaseBlockLocks', {user});
-
       const userId = user._id;
       const lock = Locks.findOne({blockKey});
       const locked = lock ? true : false;
@@ -73,6 +71,7 @@ export default function () {
           { $set: {userId, username, updatedAt: new Date()} }
         );
       }
+      Meteor.call('releaseOtherBlockLocks', {user, blockKey});
     }
   });
 
@@ -93,6 +92,13 @@ export default function () {
     releaseBlockLocks({user}) {
       const userId = user._id;
       Locks.remove({userId});
+    }
+  });
+
+  Meteor.methods({
+    releaseOtherBlockLocks({user, blockKey}) {
+      const userId = user._id;
+      Locks.remove({userId, blockKey: {$ne: blockKey}});
     }
   });
 
