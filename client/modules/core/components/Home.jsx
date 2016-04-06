@@ -20,12 +20,12 @@ export default class Home extends React.Component {
       isEditing: false,
       releaseLockOnBlur: true,
     };
-    this.lockedKeys = [];
+    this.locks = [];
   }
 
   isBlockLocked(contentBlock, callback) {
     const {user} = this.props;
-    const locks = this.lockedKeys;
+    const locks = this.locks;
     if (user && locks.length > 0) {
       const lockedByOthers = R.filter(lock => lock.userId !== user._id, locks);
       const lockedBlocks = lockedByOthers.map(lock => lock.blockKey);
@@ -78,10 +78,10 @@ export default class Home extends React.Component {
     if (!this.state.isEditing) {
       const {contentState} = nextProps;
       if (contentState) {
-        this.lockedKeys = nextProps.locks;
+        this.locks = nextProps.locks;
         const {editorState} = this.state;
         const newState = EditorState.push(editorState, contentState);
-        this.setState({editorState: newState})
+        this.setState({editorState: newState});
       }
     }
   }
