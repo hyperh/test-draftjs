@@ -106,7 +106,7 @@ export default class Home extends React.Component {
         {rawDraftContentStates.map(
           raw => {
             return (
-              <ListItem raw={raw} select={select} remove={remove} />
+              <ListItem raw={raw} select={select} remove={remove} selectedRawId={rawId} />
             );
           }
         )}
