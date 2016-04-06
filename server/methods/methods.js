@@ -56,6 +56,33 @@ export default function () {
   });
 
   Meteor.methods({
+    requestBlockLock({blockKey, user}) {
+      Meteor.call('releaseBlockLocks', {user});
+
+      const userId = user._id;
+      const lock = Locks.findOne({blockKey});
+      const locked = lock ? true : false;
+
+      const timeout = 5000;
+      const timeDiff = lock ? new Date() - lock.updatedAt : timeout + 1;
+      const username = user.username;
+
+      if (!locked || timeDiff >= timeout) {
+        Locks.upsert({blockKey},
+          { $set: {userId, username, updatedAt: new Date()} }
+        );
+      }
+    }
+  });
+
+  Meteor.methods({
+    releaseBlockLocks({user}) {
+      const userId = user._id;
+      Locks.remove({userId});
+    }
+  });
+
+  Meteor.methods({
     '_wipeAndInitialize'() {
       RawDraftContentStates.remove({});
       Locks.remove({});

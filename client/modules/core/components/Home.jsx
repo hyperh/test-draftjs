@@ -23,7 +23,11 @@ export default class Home extends React.Component {
   }
 
   onChange(rawId, editorState) {
-    const {edit, releaseLock, user, canEdit} = this.props;
+    const {editBlock, user, requestBlockLock, releaseBlockLocks} = this.props;
+
+    console.log(`onChange`);
+    console.log(user);
+
     if (rawId) {
       this.setState({editorState});
 
@@ -34,47 +38,37 @@ export default class Home extends React.Component {
       const anchorKey = selectionState.getAnchorKey();
       const focusKey = selectionState.getFocusKey();
 
-      const hasFocus = selectionState.getHasFocus();
-      this.setState({isEditing: hasFocus && canEdit});
+      requestBlockLock(anchorKey, user);
 
+      const hasFocus = selectionState.getHasFocus();
+      console.log(`hasFocus ${hasFocus}`);
       if (this.state.releaseLockOnBlur) {
-        if (!hasFocus) { releaseLock(rawId, user); }
+        if (!hasFocus) { releaseBlockLocks(user); }
       }
 
       const contentState = editorState.getCurrentContent();
       const rawContentState = convertToRaw(contentState);
 
-      edit(rawId, rawContentState, user);
+      // editBlock(rawId, rawContentState, user, blockKey);
 
       console.log(`anchorKey ${anchorKey}, focusKey ${focusKey}`);
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.state.isEditing) {
-      const {contentState} = nextProps;
-      if (contentState) {
-        const {editorState} = this.state;
-        const newState = EditorState.push(editorState, contentState);
-        this.setState({editorState: newState});
-      }
-    }
-  }
-
-  editorClick() {
-    const {requestLock, rawId, user} = this.props;
-    requestLock(rawId, user, () => this.editor.focus());
-  }
-
-  setLockedBlock() {
-    const blockId = this._lockBlockId.value;
-    this.lockedBlock = blockId;
-    console.log(this.lockedBlock);
+    // if (!this.state.isEditing) {
+    //   const {contentState} = nextProps;
+    //   if (contentState) {
+    //     const {editorState} = this.state;
+    //     const newState = EditorState.push(editorState, contentState);
+    //     this.setState({editorState: newState});
+    //   }
+    // }
   }
 
   render() {
     const {
-      create, rawDraftContentStates, select, rawId, remove, login, user, canEdit, lock
+      create, rawDraftContentStates, select, rawId, remove, login, user
     } = this.props;
 
     return (
@@ -90,18 +84,15 @@ export default class Home extends React.Component {
           </button>
         </div>
 
-        {rawId && lock && !canEdit ? `Locked by ${lock.username}` : null}
-        {lock && canEdit ? `I can edit.` : null}
-        <div className="editor" onClick={this.editorClick.bind(this)}>
+        <div className="editor">
           <Editor
             editorState={this.state.editorState}
             onChange={this.onChange.bind(this, rawId)}
-            readOnly={!canEdit}
             ref={ref => this.editor = ref}
           />
         </div>
         <input type="text" ref={ x => this._lockBlockId = x } />
-        <button onClick={this.setLockedBlock.bind(this)}>Set Locked Block</button>
+
         <button onClick={create}>New editor</button>
         {rawDraftContentStates.map(
           raw => {
@@ -116,11 +107,14 @@ export default class Home extends React.Component {
 }
 
 function isBlockLocked(contentBlock, callback) {
-  // const lockedBlocks = this.props.lockedBlockKeys;
-  const lockedBlocks = [ this.lockedBlock ];
+  const {locks, user} = this.props;
+
+  const lockedByOthers = R.filter(lock => lock.userId !== user._id, locks);
+  const lockedBlocks = lockedByOthers.map(lock => lock.blockKey);
+
   const currentBlockKey = contentBlock.getKey();
-  const isBlocked = R.contains(currentBlockKey, lockedBlocks);
-  if (isBlocked) {
+  const isLocked = R.contains(currentBlockKey, lockedBlocks);
+  if (isLocked) {
     callback(0, contentBlock.getLength());
     return;
   }

@@ -12,7 +12,10 @@ const depsMapper = (context, actions) => ({
   requestLock: actions.all.requestLock,
   releaseLock: actions.all.releaseLock,
   login: actions.all.login,
-  takeOver: actions.all.takeOver
+  takeOver: actions.all.takeOver,
+  requestBlockLock: actions.all.requestBlockLock,
+  releaseBlockLocks: actions.all.releaseBlockLocks,
+  editBlock: actions.all.editBlock
 });
 
 export const composer = ({context}, onData) => {
@@ -33,30 +36,12 @@ export const composer = ({context}, onData) => {
     };
     const user = LocalState.get('fakeUser');
 
-    const getCanEdit = () => {
-      if (rawId) {
-        const lock = Collections.Locks.findOne({rawId});
-        if (lock && user) { return lock.userId === user._id; }
-        return false;
-      }
-      return false;
-    };
-
-    const getLock = () => {
-      if (rawId) {
-        const lock = Collections.Locks.findOne({rawId});
-        return lock;
-      }
-      return undefined;
-    };
-
     onData(null, {
       rawId,
       contentState: getContentState(),
       rawDraftContentStates,
       user,
-      canEdit: getCanEdit(),
-      lock: getLock()
+      locks: Collections.Locks.find().fetch()
     });
   }
 };

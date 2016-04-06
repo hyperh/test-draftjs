@@ -62,4 +62,27 @@ export default {
       });
     }
   },
+
+
+  requestBlockLock({Meteor, LocalState}, blockKey, user) {
+    if (blockKey && user) {
+      Meteor.call('requestBlockLock', {blockKey, user}, (err) => {
+        if (err) { alert(err); }
+      });
+    }
+  },
+
+  releaseBlockLocks({Meteor}, user) {
+    if (user) {
+      Meteor.call('releaseBlockLocks', {user}, (err) => {
+        if (err) { alert(err); }
+      });
+    }
+  },
+
+  editBlock({Meteor}, rawId, rawContentState, user, blockKey) {
+    if (user) {
+      Meteor.call('editBlock', {rawId, rawContentState, user, blockKey});
+    }
+  }
 };
