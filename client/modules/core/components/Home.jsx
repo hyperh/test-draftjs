@@ -1,6 +1,6 @@
 import React from 'react';
 import R from 'ramda';
-import {Editor, EditorState, convertToRaw, CompositeDecorator} from 'draft-js';
+import {Editor, EditorState, convertToRaw, CompositeDecorator, ContentState} from 'draft-js';
 import Login from './Login.jsx';
 import ListItem from './ListItem.jsx';
 
@@ -72,6 +72,34 @@ export default class Home extends React.Component {
 
       console.log(`anchorKey ${anchorKey}, focusKey ${focusKey}`);
     }
+  }
+
+  _currentlySelectedBlocks() {
+    // TODO - return the blocks selected by current user
+    return [];
+  }
+
+  _injectChanges(contentState) {
+    const { editorState } = this.state;
+    const selectionState = editorState.getSelection();
+
+    const contentBlocks = contentState.getBlocksAsArray();
+    const selectedBlocks = this._currentlySelectedBlocks.bind(this)();
+    const selectedBlockKeys = selectedBlocks.map( block => block.getKey() );
+
+    const newBlockArray = contentBlocks.map( block => {
+      const key = block.getKey();
+      const isSelected = R.contains(key, selectedBlockKeys);
+      if (isSelected) {
+        return selectedBlocks[key];
+      }
+      return block;
+    });
+
+    const newContentState = ContentState.createFromBlockArray(newBlockArray);
+    const newEditorState = EditorState.push(editorState, newContentState);
+    const newState = EditorState.forceSelection(newEditorState, selectionState);
+    this.setState({editorState: newState});
   }
 
   componentWillReceiveProps(nextProps) {
