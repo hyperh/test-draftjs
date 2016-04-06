@@ -9,8 +9,8 @@ const depsMapper = (context, actions) => ({
   edit: actions.all.edit,
   select: actions.all.select,
   remove: actions.all.remove,
-  lock: actions.all.lock,
-  unlock: actions.all.unlock,
+  requestLock: actions.all.requestLock,
+  releaseLock: actions.all.releaseLock,
   login: actions.all.login
 });
 
@@ -30,10 +30,13 @@ export const composer = ({context}, onData) => {
       }
       return undefined;
     };
-    const getSelectedLock = () => {
+    const user = LocalState.get('fakeUser');
+
+    const getCanEdit = () => {
       if (rawId) {
         const lock = Collections.Locks.findOne({rawId});
-        return lock;
+        if (lock) { return lock.userId === user._id; }
+        return undefined;
       }
       return undefined;
     };
@@ -42,8 +45,8 @@ export const composer = ({context}, onData) => {
       rawId,
       contentState: getContentState(),
       rawDraftContentStates,
-      user: LocalState.get('fakeUser'), // Meteor.user(),
-      selectedLock: getSelectedLock()
+      user,
+      canEdit: getCanEdit()
     });
   }
 };

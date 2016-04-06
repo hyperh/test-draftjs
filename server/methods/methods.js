@@ -22,21 +22,27 @@ export default function () {
   });
 
   Meteor.methods({
-    lock({rawId}) {
-      const userId = this.userId;
+    requestLock({rawId, user}) {
+      // const userId = this.userId;
+      console.log(user);
+      const userId = user._id;
       const locks = Locks.find({rawId});
       const locked = locks.count() > 1;
 
-      const user = Meteor.users.findOne(userId);
+      // const user = Meteor.users.findOne(userId);
       const username = user.username;
 
-      if (!locked) { Locks.insert({rawId, userId, username}); }
+      if (!locked) {
+        Locks.insert({rawId, userId, username});
+      }
     }
   });
 
   Meteor.methods({
-    unlock({rawId}) {
-      const userId = this.userId;
+    releaseLock({rawId, user}) {
+      // const userId = this.userId;
+      console.log(user);
+      const userId = user._id;
       Locks.remove({rawId, userId});
     }
   });
@@ -48,7 +54,7 @@ export default function () {
       Meteor.users.remove({});
 
       Accounts.createUser({
-        email: 'alic@test.com',
+        email: 'alice@test.com',
         username: 'alice',
         password: '1'
       });

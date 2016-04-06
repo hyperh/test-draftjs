@@ -26,12 +26,16 @@ export default {
     Meteor.call('remove', {id});
   },
 
-  lock({Meteor}, rawId) {
-    Meteor.call('lock', {rawId});
+  requestLock({Meteor, LocalState}, rawId, user) {
+    Meteor.call('requestLock', {rawId, user}, (err, res) => {
+      if (err) { alert(err); }
+      else { LocalState.set('canEdit', res); }
+    });
   },
 
-  unlock({Meteor}, rawId) {
-    Meteor.call('unlock', {rawId});
+  releaseLock({Meteor, LocalState}, rawId, user) {
+    Meteor.call('releaseLock', {rawId, user});
+    LocalState.set('canEdit', false);
   },
 
   login({Meteor, LocalState, FlowRouter}, usernameOrEmail, password) {
