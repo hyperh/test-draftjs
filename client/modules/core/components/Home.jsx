@@ -77,8 +77,8 @@ export default class Home extends React.Component {
 
   _getSelectedBlocks() {
     const { editorState } = this.state;
-
     const selectionState = editorState.getSelection();
+
     const hasFocus = selectionState.getHasFocus();
     const start = selectionState.getStartKey();
     const end = selectionState.getEndKey();
@@ -87,20 +87,14 @@ export default class Home extends React.Component {
       const contentState = editorState.getCurrentContent();
       const blockArray = contentState.getBlocksAsArray();
 
+      /* eslint-disable curly */
       let index = {start: null, end: null};
+      blockArray.map((block, i) => {
+        if (block.getKey() === start) index.start = i;
+        if (block.getKey() === end) index.end = i;
+      }); /* eslint-enable */
 
-      blockArray.map( (block, i) => {
-        if (block.getKey() === start) {
-          index.start = i;
-        }
-        if (block.getKey() === end) {
-          index.end = i;
-        }
-      });
-
-      return blockArray.filter( (_, i) => {
-        return i >= index.start && i <= index.end;
-      });
+      return blockArray.filter((_, i) => i >= index.start && i <= index.end);
     }
     return [];
   }
@@ -124,7 +118,7 @@ export default class Home extends React.Component {
 
     // Get the two block arrays and then merge them to form a new one
     const newContentBlocks = contentState.getBlocksAsArray();       // from server
-    const selectedBlocks = this._getSelectedBlocks.bind(this)();    // from user focus
+    const selectedBlocks = this._getSelectedBlocks.bind(this)();    // from user selection
     const newBlockArray = this._mergeBlockArrays.bind(this)(newContentBlocks, selectedBlocks);
 
     // Wrapping it all back up into an EditorState object
