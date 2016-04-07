@@ -1,6 +1,6 @@
 import React from 'react';
 import R from 'ramda';
-import {Editor, EditorState, convertToRaw, CompositeDecorator, ContentState} from 'draft-js';
+import {Editor, EditorState, convertToRaw, CompositeDecorator, ContentState, getDefaultKeyBinding} from 'draft-js';
 import Login from './Login.jsx';
 import ListItem from './ListItem.jsx';
 
@@ -72,6 +72,17 @@ export default class Home extends React.Component {
     }
   }
 
+  handleKeyCommand(command) {
+    const {editorState} = this.state;
+    const locks = this.locks;
+    if (command === 'delete-backspace') {
+      if (focusOnLockedBlock(editorState, locks)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   _mergeBlockArrays(newBlocks, selectedBlocks) {
     const contentState = this.state.editorState.getCurrentContent();
 
@@ -135,6 +146,8 @@ export default class Home extends React.Component {
           <Editor
             editorState={this.state.editorState}
             onChange={this.onChange.bind(this, rawId)}
+            handleKeyCommand={this.handleKeyCommand.bind(this)}
+            keyBindingFn={myKeyBindingFn}
             ref={ref => this.editor = ref}
           />
         </div>
@@ -151,6 +164,14 @@ export default class Home extends React.Component {
       </div>
     );
   }
+}
+
+function myKeyBindingFn(e) {
+  const deleting = e.keyCode === 8 || e.keyCode === 46;
+  if (deleting) {
+    return 'delete-backspace';
+  }
+  return getDefaultKeyBinding(e);
 }
 
 function focusOnLockedBlock(editorState, locks) {
