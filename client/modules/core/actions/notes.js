@@ -57,11 +57,9 @@ export default {
   // },
 
   releaseAllLocks({Meteor}, user) {
-    if (user) {
-      Meteor.call('releaseAllLocks', {user}, (err) => {
-        if (err) { alert(err); }
-      });
-    }
+    Meteor.call('releaseAllLocks', {user}, (err) => {
+      if (err) { alert(err); }
+    });
   },
 
   releaseOtherLocks({Meteor}, rawId, blockKeys, user) {

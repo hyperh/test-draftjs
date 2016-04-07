@@ -115,7 +115,7 @@ export default class Home extends React.Component {
 
   render() {
     const {
-      create, rawDraftContentStates, select, rawId, remove, login, user
+      create, rawDraftContentStates, select, rawId, remove, login, user, releaseAllLocks
     } = this.props;
 
     return (
@@ -128,6 +128,10 @@ export default class Home extends React.Component {
         <div>
           <button onClick={() => this.setState({releaseLockOnBlur: !this.state.releaseLockOnBlur})}>
             Release lock on blur: {this.state.releaseLockOnBlur ? 'true' : 'false'}
+          </button>
+
+          <button onClick={releaseAllLocks}>
+            Release all locks
           </button>
         </div>
 

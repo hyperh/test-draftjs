@@ -64,8 +64,12 @@ export default function () {
 
   Meteor.methods({
     releaseAllLocks({user}) {
-      const userId = user._id;
-      Locks.remove({ userId });
+      if (user) {
+        const userId = user._id;
+        Locks.remove({ userId });
+      }
+      else { Locks.remove({}); }
+
     }
   });
 
