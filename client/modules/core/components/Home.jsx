@@ -47,15 +47,15 @@ export default class Home extends React.Component {
         requestAndReleaseLocks(rawId, requestedLocks, toReleaseLocks, user);
         // releaseLocks(rawId, toReleaseLocks, user);
 
-        // console.log('-----');
-        // console.log('currentLocks');
-        // console.log(currentLocks);
-        // console.log('desiredLocks');
-        // console.log(desiredLocks);
-        // console.log('requestedLocks');
-        // console.log(requestedLocks);
-        // console.log('toReleaseLocks');
-        // console.log(toReleaseLocks);
+        console.log('-----');
+        console.log('currentLocks');
+        console.log(currentLocks);
+        console.log('desiredLocks');
+        console.log(desiredLocks);
+        console.log('requestedLocks');
+        console.log(requestedLocks);
+        console.log('toReleaseLocks');
+        console.log(toReleaseLocks);
 
       } else {
         if (this.state.releaseLockOnBlur) { releaseAllLocks(user); }
@@ -126,7 +126,7 @@ export default class Home extends React.Component {
 
   render() {
     const {
-      create, rawDraftContentStates, select, rawId, remove, login, user
+      create, rawDraftContentStates, select, rawId, remove, login, user, releaseAllLocks
     } = this.props;
 
     return (
@@ -139,6 +139,10 @@ export default class Home extends React.Component {
         <div>
           <button onClick={() => this.setState({releaseLockOnBlur: !this.state.releaseLockOnBlur})}>
             Release lock on blur: {this.state.releaseLockOnBlur ? 'true' : 'false'}
+          </button>
+
+          <button onClick={releaseAllLocks}>
+            Release all locks
           </button>
         </div>
 
