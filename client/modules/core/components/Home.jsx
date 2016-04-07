@@ -40,12 +40,11 @@ export default class Home extends React.Component {
       const selectionState = editorState.getSelection();
       const hasFocus = selectionState.getHasFocus();
 
-      const prevEditorState = this.state.editorState;
-      const prevHasFocus = prevEditorState.getSelection().getHasFocus();
-      const userTriggeredFocus = !prevHasFocus && hasFocus;
+      // const prevEditorState = this.state.editorState;
+      // const prevHasFocus = prevEditorState.getSelection().getHasFocus();
+      // const userTriggeredFocus = !prevHasFocus && hasFocus;
 
-      if (hasFocus && !userTriggeredFocus) {
-        this.setState({isEditing: true});
+      if (hasFocus) {
         const currentLocks = this.locks.map(lock => lock.blockKey);
         const desiredLocks = getSelectedBlocks(editorState).map(block => block.getKey());
         const requestedLocks = R.difference(desiredLocks, currentLocks);
@@ -80,20 +79,21 @@ export default class Home extends React.Component {
   }
 
   handleKeyCommand(command) {
+    const {user} = this.props;
     const {editorState} = this.state;
     const locks = this.locks;
     if (command === 'delete-backspace') {
-      if (focusOnLockedBlock(editorState, locks)) {
+      if (focusOnLockedBlock(editorState, locks, user)) {
         return true;
       }
     }
     if (command === 'space') {
-      if (focusOnLockedBlock(editorState, locks)) {
+      if (focusOnLockedBlock(editorState, locks, user)) {
         return true;
       }
     }
     if (command === 'cutting' || command === 'pasting') {
-      if (focusOnLockedBlock(editorState, locks)) {
+      if (focusOnLockedBlock(editorState, locks, user)) {
         return true;
       }
     }
@@ -208,12 +208,14 @@ function myKeyBindingFn(e) {
   return getDefaultKeyBinding(e);
 }
 
-function focusOnLockedBlock(editorState, locks) {
+function focusOnLockedBlock(editorState, locks, user) {
   const selectionState = editorState.getSelection();
 
   const hasFocus = selectionState.getHasFocus();
   const focusKey = selectionState.getFocusKey();
-  const lockedKeys = locks.map(lock => lock.blockKey);
+  const lockedKeys = locks
+    .filter(lock => lock.userId !== user._id)
+    .map(lock => lock.blockKey);
 
   if (hasFocus && R.contains(focusKey, lockedKeys)) {
     return true;
