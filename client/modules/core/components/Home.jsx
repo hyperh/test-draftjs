@@ -145,7 +145,7 @@ export default class Home extends React.Component {
             Release lock on blur: {this.state.releaseLockOnBlur ? 'true' : 'false'}
           </button>
 
-          <button onClick={releaseAllLocks}>
+          <button onClick={releaseAllLocks.bind(null, undefined)}>
             Release all locks
           </button>
         </div>

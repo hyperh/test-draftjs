@@ -57,6 +57,8 @@ export default {
   // },
 
   releaseAllLocks({Meteor}, user) {
+    console.log('releaseAllLocks');
+    console.log(user);
     Meteor.call('releaseAllLocks', {user}, (err) => {
       if (err) { alert(err); }
     });
