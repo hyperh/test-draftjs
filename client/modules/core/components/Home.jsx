@@ -94,31 +94,61 @@ export default class Home extends React.Component {
     const clientBlockKeys = getKeys(clientBlocks);
     const selectedBlockKeys = getKeys(selectedBlocks);
 
-    const blocksAdded = R.difference(newBlockKeys, clientBlockKeys);
     const blocksDeleted = R.difference(clientBlockKeys, newBlockKeys);
+    const blocksAdded = R.difference(newBlockKeys, clientBlockKeys);
+    const blocksAddedAfter = blocksAdded.map( key => newContentState.getKeyBefore(key));
 
-    /* eslint-disable curly */
+    // make temp array
     let temp = [];
-    newBlocks.map( newBlock => {
-      const key = newBlock.getKey();
-      if (R.contains(key, blocksClientNeeds)) temp.push(newBlock);
 
+    // if a new block is to be added to the top, push to temp
+    const topBlockIndex = R.indexOf(null, blocksAddedAfter);
+    if (topBlockIndex >= 0) {
+      const key = blocksAdded[topBlockIndex];
+      temp.push(newContentState.getBlockForKey(key));
+    }
+
+    // for each client block
+    clientBlocks.map( clientBlock => {
+      const key = clientBlock.getKey();
+      const getServerBlock = myKey => newContentState.getBlockForKey(myKey);
+
+      // if user is currently on this block
+      const isSelected = R.contains(key, selectedBlockKeys);
+      if (isSelected) {
+        // push client block
+        temp.push(clientBlock);
+      } else {
+        // push server block
+        temp.push(getServerBlock(key));
+      }
+
+      // check if there is a block to be added after this one
+      const newBlockAfterIndex = R.indexOf(key, blocksAddedAfter);
+      if (newBlockAfterIndex >= 0) {
+        // yes, get the key of the block we want to add and push to temp
+        const addKey = blocksAdded[newBlockAfterIndex];
+        temp.push(getServerBlock(addKey));
+      }
     });
-    /* eslint-enable */
 
-    // let newKeyArray = [];
-    // keysToCheck.map( key => {
-    //   const blockBefore = newContentState.getKeyBefore(key);
+    const finalArray = temp.map( block => {
+      const key = block.getKey();
+      if (R.contains(key, blocksDeleted)) {
+        return null;
+      }
+      return block;
+    });
 
+    return R.difference(finalArray, [null]);
+
+    // return newBlocks.map( newBlock => {
+    //   const key = newBlock.getKey();
+    //   const clientBlock = contentState.getBlockForKey(key);
+    //   const isSelected = R.contains(key, selectedBlocks.map(x => x.getKey()));
+
+    //   return isSelected ? clientBlock : newBlock;
     // });
-
-    return newBlocks.map( newBlock => {
-      const key = newBlock.getKey();
-      const clientBlock = contentState.getBlockForKey(key);
-      const isSelected = R.contains(key, selectedBlocks.map(x => x.getKey()));
-
-      return isSelected ? clientBlock : newBlock;
-    });
   }
 
   _injectChanges(contentState) {
