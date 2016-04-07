@@ -18,6 +18,7 @@ export default class Home extends React.Component {
     this.state = {
       editorState: EditorState.createEmpty(decorator),
       releaseLockOnBlur: true,
+      isEditing: false
     };
     this.locks = [];
   }
@@ -39,6 +40,7 @@ export default class Home extends React.Component {
       const hasFocus = selectionState.getHasFocus();
 
       if (hasFocus) {
+        this.setState({isEditing: true});
         const currentLocks = this.locks.map(lock => lock.blockKey);
         const desiredLocks = getSelectedBlocks(editorState).map(block => block.getKey());
         const requestedLocks = R.difference(desiredLocks, currentLocks);
@@ -116,11 +118,13 @@ export default class Home extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.locks = nextProps.locks;
 
-    const {contentState} = nextProps;
-    if (contentState) {
-      const {editorState} = this.state;
-      const newState = EditorState.push(editorState, contentState);
-      this.setState({editorState: newState});
+    if (!this.state.isEditing) {
+      const {contentState} = nextProps;
+      if (contentState) {
+        const {editorState} = this.state;
+        const newState = EditorState.push(editorState, contentState);
+        this.setState({editorState: newState});
+      }
     }
   }
 
