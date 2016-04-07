@@ -48,15 +48,15 @@ export default class Home extends React.Component {
         requestAndReleaseLocks(rawId, requestedLocks, toReleaseLocks, user);
         // releaseLocks(rawId, toReleaseLocks, user);
 
-        // console.log('-----');
-        // console.log('currentLocks');
-        // console.log(currentLocks);
-        // console.log('desiredLocks');
-        // console.log(desiredLocks);
-        // console.log('requestedLocks');
-        // console.log(requestedLocks);
-        // console.log('toReleaseLocks');
-        // console.log(toReleaseLocks);
+        console.log('-----');
+        console.log('currentLocks');
+        console.log(currentLocks);
+        console.log('desiredLocks');
+        console.log(desiredLocks);
+        console.log('requestedLocks');
+        console.log(requestedLocks);
+        console.log('toReleaseLocks');
+        console.log(toReleaseLocks);
 
       } else {
         if (this.state.releaseLockOnBlur) { releaseAllLocks(user); }
