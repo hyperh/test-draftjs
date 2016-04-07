@@ -26,7 +26,7 @@ export default class Home extends React.Component {
   onChange(rawId, editorState) {
     const {
       user,
-      requestLocks, releaseLocks, releaseAllLocks, releaseOtherLocks,
+      requestAndReleaseLocks, releaseAllLocks, releaseOtherLocks,
       editBlock
     } = this.props;
 
@@ -36,27 +36,39 @@ export default class Home extends React.Component {
 
     if (rawId) {
       this.setState({editorState});
-
       const selectionState = editorState.getSelection();
-
-      // If highlight text, anchor is start of selection, focus is end
-      // If no highlight, then anchor = focus
-      const anchorKey = selectionState.getAnchorKey();
-      const focusKey = selectionState.getFocusKey();
-
-      requestBlockLock(anchorKey, user);
-
       const hasFocus = selectionState.getHasFocus();
-      console.log(`hasFocus ${hasFocus}`);
-      this.setState({isEditing: true});
-      if (this.state.releaseLockOnBlur) {
-        if (!hasFocus) { releaseBlockLocks(user); }
+
+      if (hasFocus) {
+        this.setState({isEditing: true});
+
+        const currentLocks = this.locks.map(lock => lock.blockKey);
+        const desiredLocks = getSelectedBlocks(editorState).map(block => block.getKey());
+        const requestedLocks = R.difference(desiredLocks, currentLocks);
+        const toReleaseLocks = R.difference(currentLocks, desiredLocks);
+
+        requestAndReleaseLocks(rawId, requestedLocks, toReleaseLocks, user);
+        // releaseLocks(rawId, toReleaseLocks, user);
+
+        // console.log('-----');
+        // console.log('currentLocks');
+        // console.log(currentLocks);
+        // console.log('desiredLocks');
+        // console.log(desiredLocks);
+        // console.log('requestedLocks');
+        // console.log(requestedLocks);
+        // console.log('toReleaseLocks');
+        // console.log(toReleaseLocks);
+
+      } else {
+        if (this.state.releaseLockOnBlur) { releaseAllLocks(user); }
       }
 
       const contentState = editorState.getCurrentContent();
       const rawDraftContentState = convertToRaw(contentState);
+      const anchorKey = selectionState.getAnchorKey();
+      const focusKey = selectionState.getFocusKey();
       const block = R.find(R.propEq('key', anchorKey), rawDraftContentState.blocks);
-
       editBlock(rawId, user, rawDraftContentState, block);
 
       console.log(`anchorKey ${anchorKey}, focusKey ${focusKey}`);
@@ -94,10 +106,11 @@ export default class Home extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    this.locks = nextProps.locks;
+
     if (!this.state.isEditing) {
       const {contentState} = nextProps;
       if (contentState) {
-        this.locks = nextProps.locks;
         const {editorState} = this.state;
         const newState = EditorState.push(editorState, contentState);
         this.setState({editorState: newState});

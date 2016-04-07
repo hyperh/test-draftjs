@@ -11,7 +11,7 @@ const depsMapper = (context, actions) => ({
   login: actions.notes.login,
   takeOver: actions.notes.takeOver,
   requestLocks: actions.notes.requestLocks,
-  releaseLocks: actions.notes.releaseLocks,
+  requestAndReleaseLocks: actions.notes.requestAndReleaseLocks,
   releaseAllLocks: actions.notes.releaseAllLocks,
   releaseOtherLocks: actions.notes.releaseOtherLocks,
   editBlock: actions.notes.editBlock

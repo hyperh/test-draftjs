@@ -1,6 +1,7 @@
 import {Meteor} from 'meteor/meteor';
 import {RawDraftContentStates, Locks} from '/lib/collections';
 import R from 'ramda';
+import {check} from 'meteor/check';
 
 export default function () {
   Meteor.methods({
@@ -27,11 +28,11 @@ export default function () {
   });
 
   Meteor.methods({
-    requestLocks({rawId, blockKeys, user}) {
+    requestAndReleaseLocks({rawId, requestedBlockKeys, releaseBlockKeys, user}) {
       const userId = user._id;
       const username = user.username;
 
-      const locks = Locks.find({ blockKey: { $in: blockKeys } });
+      const locks = Locks.find({ blockKey: { $in: requestedBlockKeys } });
       const noneLocked = locks.length === 0 ? true : false;
 
       const timeout = 5000;
@@ -40,13 +41,13 @@ export default function () {
       const canTakeOverAll = canTakeOver.length === timeDiffs.length;
 
       if (noneLocked || canTakeOverAll) {
-        blockKeys.forEach(blockKey => {
+        requestedBlockKeys.forEach(blockKey => {
           Locks.upsert({rawId, blockKey},
             { $set: {userId, username, updatedAt: new Date()} }
           );
         });
       }
-      Meteor.call('releaseOtherBlockLocks', {user, blockKeys});
+      Meteor.call('releaseLocks', {rawId, user, blockKeys: releaseBlockKeys});
     }
   });
 
@@ -56,7 +57,7 @@ export default function () {
       Locks.remove({
         userId,
         rawId,
-        blockKey: { $in: { blockKeys } }
+        blockKey: { $in: blockKeys }
       });
     }
   });
@@ -81,7 +82,7 @@ export default function () {
 
   Meteor.methods({
     editBlock({rawId, user, rawDraftContentState, block}) {
-      console.log(block);
+      // console.log(block);
 
       RawDraftContentStates.update(rawId, rawDraftContentState);
       const lock = Locks.findOne({blockKey: block.key, userId: user._id});

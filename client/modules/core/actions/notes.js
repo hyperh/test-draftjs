@@ -40,21 +40,21 @@ export default {
     }
   },
 
-  requestLocks({Meteor}, rawId, blockKeys, user) {
+  requestAndReleaseLocks({Meteor}, rawId, requestedBlockKeys, releaseBlockKeys, user) {
     if (user) {
-      Meteor.call('requestLocks', {rawId, blockKeys, user}, (err) => {
+      Meteor.call('requestAndReleaseLocks', {rawId, requestedBlockKeys, releaseBlockKeys, user}, (err) => {
         if (err) { alert(err); }
       });
     }
   },
 
-  releaseLocks({Meteor}, rawId, blockKeys, user) {
-    if (user) {
-      Meteor.call('releaseLocks', {rawId, blockKeys, user}, err => {
-        if (err) { alert(err); }
-      });
-    }
-  },
+  // releaseLocks({Meteor}, rawId, blockKeys, user) {
+  //   if (user) {
+  //     Meteor.call('releaseLocks', {rawId, blockKeys, user}, err => {
+  //       if (err) { alert(err); }
+  //     });
+  //   }
+  // },
 
   releaseAllLocks({Meteor}, user) {
     if (user) {
