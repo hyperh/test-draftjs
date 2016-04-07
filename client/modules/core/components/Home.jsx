@@ -78,28 +78,6 @@ export default class Home extends React.Component {
     }
   }
 
-  handleKeyCommand(command) {
-    const {user} = this.props;
-    const {editorState} = this.state;
-    const locks = this.locks;
-    if (command === 'delete-backspace') {
-      if (focusOnLockedBlock(editorState, locks, user)) {
-        return true;
-      }
-    }
-    if (command === 'space') {
-      if (focusOnLockedBlock(editorState, locks, user)) {
-        return true;
-      }
-    }
-    if (command === 'cutting' || command === 'pasting') {
-      if (focusOnLockedBlock(editorState, locks, user)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   _mergeBlockArrays(newBlocks, selectedBlocks) {
     const contentState = this.state.editorState.getCurrentContent();
 
@@ -173,8 +151,8 @@ export default class Home extends React.Component {
           <Editor
             editorState={this.state.editorState}
             onChange={this.onChange.bind(this, rawId)}
-            handleKeyCommand={this.handleKeyCommand.bind(this)}
-            keyBindingFn={myKeyBindingFn}
+            handleKeyCommand={handleKeyCommand}
+            keyBindingFn={myKeyBindingFn.bind(this)}
             ref={ref => this.editor = ref}
           />
         </div>
@@ -193,22 +171,41 @@ export default class Home extends React.Component {
   }
 }
 
+function handleKeyCommand(command) {
+  if (command === 'delete-backspace') {
+    return true;
+  }
+  if (command === 'space') {
+    return true;
+  }
+  if (command === 'cutting' || command === 'pasting') {
+    return true;
+  }
+  return false;
+}
+
 function myKeyBindingFn(e) {
-  const {hasCommandModifier} = KeyBindingUtil;
-  const deleting = e.keyCode === 8 || e.keyCode === 46; // backspace or delete
-  const pasting = e.keyCode === 86 && hasCommandModifier(e);  // 'v'
-  const cutting = e.keyCode === 88 && hasCommandModifier(e);  // 'x'
-  const space = e.keyCode === 32;
-  /* eslint-disable curly */
-  if (deleting) return 'delete-backspace';
-  if (pasting) return 'pasting';
-  if (cutting) return 'cutting';
-  if (space) return 'space';
-  /* eslint-enable */
+  const {user} = this.props;
+  const {editorState} = this.state;
+  const locks = this.locks;
+
+  if (isFocusOnLocked(editorState, locks, user)) {
+    const {hasCommandModifier} = KeyBindingUtil;
+    const deleting = e.keyCode === 8 || e.keyCode === 46; // backspace or delete
+    const pasting = e.keyCode === 86 && hasCommandModifier(e);  // command + 'v'
+    const cutting = e.keyCode === 88 && hasCommandModifier(e);  // command + 'x'
+    const space = e.keyCode === 32; // space
+    /* eslint-disable curly */
+    if (deleting) return 'delete-backspace';
+    if (pasting) return 'pasting';
+    if (cutting) return 'cutting';
+    if (space) return 'space';
+    /* eslint-enable */
+  }
   return getDefaultKeyBinding(e);
 }
 
-function focusOnLockedBlock(editorState, locks, user) {
+function isFocusOnLocked(editorState, locks, user) {
   const selectionState = editorState.getSelection();
 
   const hasFocus = selectionState.getHasFocus();
@@ -220,6 +217,7 @@ function focusOnLockedBlock(editorState, locks, user) {
   if (hasFocus && R.contains(focusKey, lockedKeys)) {
     return true;
   }
+  console.log('isFocusOnLocked: ' + false);
   return false;
 }
 
