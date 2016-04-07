@@ -121,7 +121,10 @@ export default class Home extends React.Component {
     // Wrapping it all back up into an EditorState object
     const newContentState = ContentState.createFromBlockArray(newBlockArray);
     const newEditorState = EditorState.push(editorState, newContentState);
-    const newState = EditorState.forceSelection(newEditorState, currentSelectionState);
+
+    const hasFocus = currentSelectionState.getHasFocus();
+    const maintainSelection = hasFocus ? EditorState.forceSelection : EditorState.acceptSelection;
+    const newState = maintainSelection(newEditorState, currentSelectionState);
 
     this.setState({editorState: newState});
   }
