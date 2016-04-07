@@ -4,6 +4,7 @@ import {Editor, EditorState, convertToRaw, CompositeDecorator, ContentState} fro
 import {getDefaultKeyBinding, KeyBindingUtil} from 'draft-js';
 import Login from './Login.jsx';
 import ListItem from './ListItem.jsx';
+import WhyDidYouUpdateMixin from '/lib/WhyDidYouUpdateMixin';
 
 export default class Home extends React.Component {
   constructor(props) {
@@ -22,6 +23,7 @@ export default class Home extends React.Component {
       isEditing: false
     };
     this.locks = [];
+    // this.componentDidUpdate = WhyDidYouUpdateMixin.componentDidUpdate.bind(this);
   }
 
   onChange(rawId, editorState) {
@@ -31,9 +33,11 @@ export default class Home extends React.Component {
       editBlock
     } = this.props;
 
-    console.log(getSelectedBlocks(editorState));
-    console.log(`onChange`);
-    console.log(user);
+    // console.log('-----');
+
+    // console.log(getSelectedBlocks(editorState));
+    // console.log(`onChange`);
+    // console.log(user);
 
     if (rawId) {
       this.setState({editorState});
@@ -53,15 +57,14 @@ export default class Home extends React.Component {
         requestAndReleaseLocks(rawId, requestedLocks, toReleaseLocks, user);
         // releaseLocks(rawId, toReleaseLocks, user);
 
-        console.log('-----');
-        console.log('currentLocks');
-        console.log(currentLocks);
-        console.log('desiredLocks');
-        console.log(desiredLocks);
-        console.log('requestedLocks');
-        console.log(requestedLocks);
-        console.log('toReleaseLocks');
-        console.log(toReleaseLocks);
+        // console.log('currentLocks');
+        // console.log(currentLocks);
+        // console.log('desiredLocks');
+        // console.log(desiredLocks);
+        // console.log('requestedLocks');
+        // console.log(requestedLocks);
+        // console.log('toReleaseLocks');
+        // console.log(toReleaseLocks);
 
       } else if (this.state.releaseLockOnBlur) {
         releaseAllLocks(user);
@@ -74,7 +77,9 @@ export default class Home extends React.Component {
       const block = R.find(R.propEq('key', anchorKey), rawDraftContentState.blocks);
       editBlock(rawId, user, rawDraftContentState, block);
 
-      console.log(`anchorKey ${anchorKey}, focusKey ${focusKey}`);
+      // console.log(`anchorKey ${anchorKey}, focusKey ${focusKey}`);
+      // console.log(`block`);
+      // console.log(block);
     }
   }
 
@@ -97,6 +102,9 @@ export default class Home extends React.Component {
 
     // Get the two block arrays and then merge them to form a new one
     const newContentBlocks = contentState.getBlocksAsArray();       // from server
+    console.log(`-----`);
+    console.log(`_injectChanges`);
+    console.log(`newContentBlocks ${newContentBlocks.length}`);
     const selectedBlocks = getSelectedBlocks(editorState);    // from user selection
     const newBlockArray = this._mergeBlockArrays.bind(this)(newContentBlocks, selectedBlocks);
 
