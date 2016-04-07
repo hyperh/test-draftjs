@@ -27,51 +27,55 @@ export default function () {
   });
 
   Meteor.methods({
-    requestLock({rawId, user}) {
-      // const userId = this.userId;
-
+    requestLocks({rawId, blockKeys, user}) {
       const userId = user._id;
-      const lock = Locks.findOne({rawId});
-      const locked = lock ? true : false;
-
-      const timeout = 5000;
-      const timeDiff = lock ? new Date() - lock.updatedAt : timeout + 1;
-
-      // const user = Meteor.users.findOne(userId);
       const username = user.username;
 
-      if (!locked || timeDiff >= timeout) {
-        Locks.upsert({rawId},
-          { $set: {userId, username, updatedAt: new Date()} }
-        );
+      const locks = Locks.find({ blockKey: { $in: blockKeys } });
+      const noneLocked = locks.length === 0 ? true : false;
+
+      const timeout = 5000;
+      const timeDiffs = locks.map(lock => new Date() - lock.updatedAt);
+      const canTakeOver = R.filter(diff => diff >= timeout, timeDiffs);
+      const canTakeOverAll = canTakeOver.length === timeDiffs.length;
+
+      if (noneLocked || canTakeOverAll) {
+        blockKeys.forEach(blockKey => {
+          Locks.upsert({rawId, blockKey},
+            { $set: {userId, username, updatedAt: new Date()} }
+          );
+        });
       }
+      Meteor.call('releaseOtherBlockLocks', {user, blockKeys});
     }
   });
 
   Meteor.methods({
-    releaseLock({rawId, user}) {
-      // const userId = this.userId;
+    releaseLocks({rawId, blockKeys, user}) {
       const userId = user._id;
-      Locks.remove({rawId, userId});
+      Locks.remove({
+        userId,
+        rawId,
+        blockKey: { $in: { blockKeys } }
+      });
     }
   });
 
   Meteor.methods({
-    requestBlockLock({blockKey, user}) {
+    releaseAllLocks({user}) {
       const userId = user._id;
-      const lock = Locks.findOne({blockKey});
-      const locked = lock ? true : false;
+      Locks.remove({ userId });
+    }
+  });
 
-      const timeout = 5000;
-      const timeDiff = lock ? new Date() - lock.updatedAt : timeout + 1;
-      const username = user.username;
-
-      if (!locked || timeDiff >= timeout) {
-        Locks.upsert({blockKey},
-          { $set: {userId, username, updatedAt: new Date()} }
-        );
-      }
-      Meteor.call('releaseOtherBlockLocks', {user, blockKey});
+  Meteor.methods({
+    releaseOtherLocks({rawId, blockKeys, user}) {
+      const userId = user._id;
+      Locks.remove({
+        userId,
+        rawId,
+        blockKey: { $nin: blockKeys }
+      });
     }
   });
 
@@ -82,23 +86,10 @@ export default function () {
       RawDraftContentStates.update(rawId, rawDraftContentState);
       const lock = Locks.findOne({blockKey: block.key, userId: user._id});
       if (lock) {
-        Locks.update(lock._id, { $set: { updatedAt: new Date() } });
+        Locks.update(lock._id, {
+          $set: { updatedAt: new Date() }
+        });
       }
-
-    }
-  });
-
-  Meteor.methods({
-    releaseBlockLocks({user}) {
-      const userId = user._id;
-      Locks.remove({userId});
-    }
-  });
-
-  Meteor.methods({
-    releaseOtherBlockLocks({user, blockKey}) {
-      const userId = user._id;
-      Locks.remove({userId, blockKey: {$ne: blockKey}});
     }
   });
 

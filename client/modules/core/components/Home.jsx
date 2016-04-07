@@ -24,7 +24,11 @@ export default class Home extends React.Component {
   }
 
   onChange(rawId, editorState) {
-    const {editBlock, user, requestBlockLock, releaseBlockLocks} = this.props;
+    const {
+      user,
+      requestLocks, releaseLocks, releaseAllLocks, releaseOtherLocks,
+      editBlock
+    } = this.props;
 
     console.log(getSelectedBlocks(editorState));
     console.log(`onChange`);

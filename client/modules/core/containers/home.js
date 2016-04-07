@@ -5,17 +5,16 @@ import R from 'ramda';
 
 const depsMapper = (context, actions) => ({
   context: () => context,
-  create: actions.all.create,
-  edit: actions.all.edit,
-  select: actions.all.select,
-  remove: actions.all.remove,
-  requestLock: actions.all.requestLock,
-  releaseLock: actions.all.releaseLock,
-  login: actions.all.login,
-  takeOver: actions.all.takeOver,
-  requestBlockLock: actions.all.requestBlockLock,
-  releaseBlockLocks: actions.all.releaseBlockLocks,
-  editBlock: actions.all.editBlock
+  create: actions.notes.create,
+  select: actions.notes.select,
+  remove: actions.notes.remove,
+  login: actions.notes.login,
+  takeOver: actions.notes.takeOver,
+  requestLocks: actions.notes.requestLocks,
+  releaseLocks: actions.notes.releaseLocks,
+  releaseAllLocks: actions.notes.releaseAllLocks,
+  releaseOtherLocks: actions.notes.releaseOtherLocks,
+  editBlock: actions.notes.editBlock
 });
 
 export const composer = ({context}, onData) => {

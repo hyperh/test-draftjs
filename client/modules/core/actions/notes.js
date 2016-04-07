@@ -11,10 +11,6 @@ export default {
     });
   },
 
-  edit({Meteor}, rawId, rawDraftContentState, user) {
-    Meteor.call('edit', {rawId, rawDraftContentState, user});
-  },
-
   select({LocalState}, id) {
     LocalState.set('selectedId', id);
   },
@@ -24,25 +20,6 @@ export default {
     if (selectedId === rawId) { LocalState.set('selectedId', undefined); }
 
     Meteor.call('remove', {rawId});
-  },
-
-  requestLock({Meteor, LocalState}, rawId, user, callback) {
-    if (rawId && user) {
-      Meteor.call('requestLock', {rawId, user}, (err, res) => {
-        if (err) { alert(err); }
-        else {
-          LocalState.set('canEdit', res);
-          if (callback) { callback(); }
-        }
-      });
-    }
-  },
-
-  releaseLock({Meteor, LocalState}, rawId, user) {
-    if (rawId && user) {
-      Meteor.call('releaseLock', {rawId, user});
-      LocalState.set('canEdit', false);
-    }
   },
 
   login({Meteor, LocalState, FlowRouter}, usernameOrEmail, password) {
@@ -63,18 +40,33 @@ export default {
     }
   },
 
-
-  requestBlockLock({Meteor, LocalState}, blockKey, user) {
-    if (blockKey && user) {
-      Meteor.call('requestBlockLock', {blockKey, user}, (err) => {
+  requestLocks({Meteor}, rawId, blockKeys, user) {
+    if (user) {
+      Meteor.call('requestLocks', {rawId, blockKeys, user}, (err) => {
         if (err) { alert(err); }
       });
     }
   },
 
-  releaseBlockLocks({Meteor}, user) {
+  releaseLocks({Meteor}, rawId, blockKeys, user) {
     if (user) {
-      Meteor.call('releaseBlockLocks', {user}, (err) => {
+      Meteor.call('releaseLocks', {rawId, blockKeys, user}, err => {
+        if (err) { alert(err); }
+      });
+    }
+  },
+
+  releaseAllLocks({Meteor}, user) {
+    if (user) {
+      Meteor.call('releaseAllLocks', {user}, (err) => {
+        if (err) { alert(err); }
+      });
+    }
+  },
+
+  releaseOtherLocks({Meteor}, rawId, blockKeys, user) {
+    if (user) {
+      Meteor.call('releaseOtherLocks', {rawId, blockKeys, user}, (err) => {
         if (err) { alert(err); }
       });
     }
