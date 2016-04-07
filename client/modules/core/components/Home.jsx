@@ -10,7 +10,7 @@ export default class Home extends React.Component {
 
     const decorator = new CompositeDecorator([
       {
-        strategy: this.isBlockLocked.bind(this),
+        strategy: isBlockLocked.bind(this),
         component: LockedBlock,
       },
     ]);
@@ -23,26 +23,10 @@ export default class Home extends React.Component {
     this.locks = [];
   }
 
-  isBlockLocked(contentBlock, callback) {
-    const {user} = this.props;
-    const locks = this.locks;
-    if (user && locks.length > 0) {
-      const lockedByOthers = R.filter(lock => lock.userId !== user._id, locks);
-      const lockedBlocks = lockedByOthers.map(lock => lock.blockKey);
-
-      const currentBlockKey = contentBlock.getKey();
-      const isLocked = R.contains(currentBlockKey, lockedBlocks);
-      if (isLocked) {
-        callback(0, contentBlock.getLength());
-        return;
-      }
-    }
-  }
-
   onChange(rawId, editorState) {
     const {editBlock, user, requestBlockLock, releaseBlockLocks} = this.props;
 
-    console.log(this._getSelectedBlocks.bind(this)());
+    console.log(getSelectedBlocks(editorState));
     console.log(`onChange`);
     console.log(user);
 
@@ -75,30 +59,6 @@ export default class Home extends React.Component {
     }
   }
 
-  _getSelectedBlocks() {
-    const { editorState } = this.state;
-    const selectionState = editorState.getSelection();
-
-    const hasFocus = selectionState.getHasFocus();
-    const start = selectionState.getStartKey();
-    const end = selectionState.getEndKey();
-
-    if (start && hasFocus) {
-      const contentState = editorState.getCurrentContent();
-      const blockArray = contentState.getBlocksAsArray();
-
-      /* eslint-disable curly */
-      let index = {start: null, end: null};
-      blockArray.map((block, i) => {
-        if (block.getKey() === start) index.start = i;
-        if (block.getKey() === end) index.end = i;
-      }); /* eslint-enable */
-
-      return blockArray.filter((_, i) => i >= index.start && i <= index.end);
-    }
-    return [];
-  }
-
   _mergeBlockArrays(newBlocks, selectedBlocks) {
     const contentState = this.state.editorState.getCurrentContent();
 
@@ -118,7 +78,7 @@ export default class Home extends React.Component {
 
     // Get the two block arrays and then merge them to form a new one
     const newContentBlocks = contentState.getBlocksAsArray();       // from server
-    const selectedBlocks = this._getSelectedBlocks.bind(this)();    // from user selection
+    const selectedBlocks = getSelectedBlocks(editorState);    // from user selection
     const newBlockArray = this._mergeBlockArrays.bind(this)(newContentBlocks, selectedBlocks);
 
     // Wrapping it all back up into an EditorState object
@@ -178,6 +138,46 @@ export default class Home extends React.Component {
         )}
       </div>
     );
+  }
+}
+
+function getSelectedBlocks(editorState) {
+  const selectionState = editorState.getSelection();
+
+  const hasFocus = selectionState.getHasFocus();
+  const start = selectionState.getStartKey();
+  const end = selectionState.getEndKey();
+
+  if (start && hasFocus) {
+    const contentState = editorState.getCurrentContent();
+    const blockArray = contentState.getBlocksAsArray();
+
+    /* eslint-disable curly */
+    let index = {start: null, end: null};
+    blockArray.map((block, i) => {
+      if (block.getKey() === start) index.start = i;
+      if (block.getKey() === end) index.end = i;
+    }); /* eslint-enable */
+
+    return blockArray.filter((_, i) => i >= index.start && i <= index.end);
+  }
+  return [];
+}
+
+function isBlockLocked(contentBlock, callback) {
+  const {user} = this.props;
+
+  if (user && this.locks.length > 0) {
+    const lockedKeys = this.locks
+      .filter(lock => lock.userId !== user._id)
+      .map(lock => lock.blockKey);
+
+    const containsCurrentKey = R.contains(contentBlock.getKey());
+    const isLocked = containsCurrentKey(lockedKeys);
+    if (isLocked) {
+      callback(0, contentBlock.getLength());
+      return;
+    }
   }
 }
 
