@@ -40,11 +40,11 @@ export default class Home extends React.Component {
       const selectionState = editorState.getSelection();
       const hasFocus = selectionState.getHasFocus();
 
-      const prevEditorState = this.state.editorState;
-      const prevHasFocus = prevEditorState.getSelection().getHasFocus();
-      const userTriggeredFocus = !prevHasFocus && hasFocus;
+      // const prevEditorState = this.state.editorState;
+      // const prevHasFocus = prevEditorState.getSelection().getHasFocus();
+      // const userTriggeredFocus = !prevHasFocus && hasFocus;
 
-      if (hasFocus && !userTriggeredFocus) {
+      if (hasFocus) {
         this.setState({isEditing: true});
         const currentLocks = this.locks.map(lock => lock.blockKey);
         const desiredLocks = getSelectedBlocks(editorState).map(block => block.getKey());
