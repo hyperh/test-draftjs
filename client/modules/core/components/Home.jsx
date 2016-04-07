@@ -1,6 +1,7 @@
 import React from 'react';
 import R from 'ramda';
-import {Editor, EditorState, convertToRaw, CompositeDecorator, ContentState, getDefaultKeyBinding} from 'draft-js';
+import {Editor, EditorState, convertToRaw, CompositeDecorator, ContentState} from 'draft-js';
+import {getDefaultKeyBinding, KeyBindingUtil} from 'draft-js';
 import Login from './Login.jsx';
 import ListItem from './ListItem.jsx';
 
@@ -59,8 +60,8 @@ export default class Home extends React.Component {
         console.log('toReleaseLocks');
         console.log(toReleaseLocks);
 
-      } else {
-        if (this.state.releaseLockOnBlur) { releaseAllLocks(user); }
+      } else if (this.state.releaseLockOnBlur) {
+        releaseAllLocks(user);
       }
 
       const contentState = editorState.getCurrentContent();
@@ -78,6 +79,11 @@ export default class Home extends React.Component {
     const {editorState} = this.state;
     const locks = this.locks;
     if (command === 'delete-backspace') {
+      if (focusOnLockedBlock(editorState, locks)) {
+        return true;
+      }
+    }
+    if (command === 'cutting' || command === 'pasting') {
       if (focusOnLockedBlock(editorState, locks)) {
         return true;
       }
@@ -175,10 +181,15 @@ export default class Home extends React.Component {
 }
 
 function myKeyBindingFn(e) {
-  const deleting = e.keyCode === 8 || e.keyCode === 46;
-  if (deleting) {
-    return 'delete-backspace';
-  }
+  const {hasCommandModifier} = KeyBindingUtil;
+  const deleting = e.keyCode === 8 || e.keyCode === 46; // backspace or delete
+  const pasting = e.keyCode === 86 && hasCommandModifier(e);  // 'v'
+  const cutting = e.keyCode === 88 && hasCommandModifier(e);  // 'x'
+  /* eslint-disable curly */
+  if (deleting) return 'delete-backspace';
+  if (pasting) return 'pasting';
+  if (cutting) return 'cutting';
+  /* eslint-enable */
   return getDefaultKeyBinding(e);
 }
 
