@@ -136,14 +136,15 @@ export default class Home extends React.Component {
   componentWillReceiveProps(nextProps) {
     this.locks = nextProps.locks;
 
-    if (!this.state.isEditing) {
+    // if (!this.state.isEditing) {
       const {contentState} = nextProps;
       if (contentState) {
-        const {editorState} = this.state;
-        const newState = EditorState.push(editorState, contentState);
-        this.setState({editorState: newState});
+        this._injectChanges.bind(this)(contentState);
+        // const {editorState} = this.state;
+        // const newState = EditorState.push(editorState, contentState);
+        // this.setState({editorState: newState});
       }
-    }
+    // }
   }
 
   render() {
