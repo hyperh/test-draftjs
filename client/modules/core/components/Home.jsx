@@ -83,6 +83,11 @@ export default class Home extends React.Component {
         return true;
       }
     }
+    if (command === 'space') {
+      if (focusOnLockedBlock(editorState, locks)) {
+        return true;
+      }
+    }
     if (command === 'cutting' || command === 'pasting') {
       if (focusOnLockedBlock(editorState, locks)) {
         return true;
@@ -185,10 +190,12 @@ function myKeyBindingFn(e) {
   const deleting = e.keyCode === 8 || e.keyCode === 46; // backspace or delete
   const pasting = e.keyCode === 86 && hasCommandModifier(e);  // 'v'
   const cutting = e.keyCode === 88 && hasCommandModifier(e);  // 'x'
+  const space = e.keyCode === 32;
   /* eslint-disable curly */
   if (deleting) return 'delete-backspace';
   if (pasting) return 'pasting';
   if (cutting) return 'cutting';
+  if (space) return 'space';
   /* eslint-enable */
   return getDefaultKeyBinding(e);
 }
