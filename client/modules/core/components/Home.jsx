@@ -125,9 +125,7 @@ export default class Home extends React.Component {
     this.locks = nextProps.locks;
 
     // if (!this.state.isEditing) {
-      const raw = convertToRaw(this.state.editorState.getCurrentContent());
-
-      if (nextProps.raw && !_.isEqual(raw, R.dissoc('_id', nextProps.raw))) {
+      if (nextProps.raw && nextProps.raw.authorId !== this.props.user._id) {
         const contentBlocks = convertFromRaw(nextProps.raw);
         const contentState = ContentState.createFromBlockArray(contentBlocks);
         this._injectChanges.bind(this)(contentState);

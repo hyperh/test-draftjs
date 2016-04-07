@@ -88,7 +88,7 @@ export default function () {
     editBlock({rawId, user, rawDraftContentState, block}) {
       // console.log(block);
 
-      RawDraftContentStates.update(rawId, rawDraftContentState);
+      RawDraftContentStates.update(rawId, R.merge(rawDraftContentState, {authorId: user._id}));
       if (block && block.key) {
         const lock = Locks.findOne({blockKey: block.key, userId: user._id});
         if (lock) {
