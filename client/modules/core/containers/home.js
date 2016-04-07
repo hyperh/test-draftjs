@@ -24,12 +24,13 @@ export const composer = ({context}, onData) => {
   if (sub.ready()) {
     const rawDraftContentStates = Collections.RawDraftContentStates.find({}).fetch();
     const rawId = LocalState.get('selectedId');
-    const getContentState = () => {
+    const getRaw = () => {
       if (rawId) {
         const raw = Collections.RawDraftContentStates.findOne(rawId);
-        const contentBlocks = convertFromRaw(raw);
-        const contentState = ContentState.createFromBlockArray(contentBlocks);
-        return contentState;
+        return raw;
+        // const contentBlocks = convertFromRaw(raw);
+        // const contentState = ContentState.createFromBlockArray(contentBlocks);
+        // return contentState;
       }
       return undefined;
     };
@@ -37,7 +38,7 @@ export const composer = ({context}, onData) => {
 
     onData(null, {
       rawId,
-      contentState: getContentState(),
+      raw: getRaw(),
       rawDraftContentStates,
       user,
       locks: Collections.Locks.find().fetch()

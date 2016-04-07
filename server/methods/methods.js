@@ -89,12 +89,15 @@ export default function () {
       // console.log(block);
 
       RawDraftContentStates.update(rawId, rawDraftContentState);
-      const lock = Locks.findOne({blockKey: block.key, userId: user._id});
-      if (lock) {
-        Locks.update(lock._id, {
-          $set: { updatedAt: new Date() }
-        });
+      if (block && block.key) {
+        const lock = Locks.findOne({blockKey: block.key, userId: user._id});
+        if (lock) {
+          Locks.update(lock._id, {
+            $set: { updatedAt: new Date() }
+          });
+        }
       }
+
     }
   });
 

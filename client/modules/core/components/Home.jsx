@@ -1,7 +1,9 @@
 import React from 'react';
 import R from 'ramda';
+import _ from 'lodash';
 import {Editor, EditorState, convertToRaw, CompositeDecorator, ContentState} from 'draft-js';
 import {getDefaultKeyBinding, KeyBindingUtil} from 'draft-js';
+import {convertFromRaw} from 'draft-js';
 import Login from './Login.jsx';
 import ListItem from './ListItem.jsx';
 import WhyDidYouUpdateMixin from '/lib/WhyDidYouUpdateMixin';
@@ -123,8 +125,11 @@ export default class Home extends React.Component {
     this.locks = nextProps.locks;
 
     // if (!this.state.isEditing) {
-      const {contentState} = nextProps;
-      if (contentState) {
+      const raw = convertToRaw(this.state.editorState.getCurrentContent());
+
+      if (!_.isEqual(raw, R.dissoc('_id', nextProps.raw))) {
+        const contentBlocks = convertFromRaw(nextProps.raw);
+        const contentState = ContentState.createFromBlockArray(contentBlocks);
         this._injectChanges.bind(this)(contentState);
         // const {editorState} = this.state;
         // const newState = EditorState.push(editorState, contentState);
@@ -247,7 +252,7 @@ function getSelectedBlocks(editorState) {
       if (block.getKey() === end) index.end = i;
     }); /* eslint-enable */
 
-    return blockArray.filter((_, i) => i >= index.start && i <= index.end);
+    return blockArray.filter((__, i) => i >= index.start && i <= index.end);
   }
   return [];
 }
