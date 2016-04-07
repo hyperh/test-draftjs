@@ -90,10 +90,10 @@ export default class Home extends React.Component {
 
     return newBlocks.map( newBlock => {
       const key = newBlock.getKey();
-      const selectedBlock = contentState.getBlockForKey(key);
+      const clientBlock = contentState.getBlockForKey(key);
       const isSelected = R.contains(key, selectedBlocks.map(x => x.getKey()));
 
-      return isSelected ? selectedBlock : newBlock;
+      return isSelected ? clientBlock : newBlock;
     });
   }
 
