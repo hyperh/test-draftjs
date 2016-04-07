@@ -85,8 +85,32 @@ export default class Home extends React.Component {
     }
   }
 
-  _mergeBlockArrays(newBlocks, selectedBlocks) {
+  _mergeBlockArrays(newBlocks, selectedBlocks, newContentState) {
     const contentState = this.state.editorState.getCurrentContent();
+    const clientBlocks = contentState.getBlocksAsArray();
+    const getKeys = R.map(x => x.getKey());
+
+    const newBlockKeys = getKeys(newBlocks);
+    const clientBlockKeys = getKeys(clientBlocks);
+    const selectedBlockKeys = getKeys(selectedBlocks);
+
+    const blocksAdded = R.difference(newBlockKeys, clientBlockKeys);
+    const blocksDeleted = R.difference(clientBlockKeys, newBlockKeys);
+
+    /* eslint-disable curly */
+    let temp = [];
+    newBlocks.map( newBlock => {
+      const key = newBlock.getKey();
+      if (R.contains(key, blocksClientNeeds)) temp.push(newBlock);
+
+    });
+    /* eslint-enable */
+
+    // let newKeyArray = [];
+    // keysToCheck.map( key => {
+    //   const blockBefore = newContentState.getKeyBefore(key);
+
+    // });
 
     return newBlocks.map( newBlock => {
       const key = newBlock.getKey();
@@ -108,7 +132,7 @@ export default class Home extends React.Component {
     console.log(`_injectChanges`);
     console.log(`newContentBlocks ${newContentBlocks.length}`);
     const selectedBlocks = getSelectedBlocks(editorState);    // from user selection
-    const newBlockArray = this._mergeBlockArrays.bind(this)(newContentBlocks, selectedBlocks);
+    const newBlockArray = this._mergeBlockArrays.bind(this)(newContentBlocks, selectedBlocks, contentState);
 
     // Wrapping it all back up into an EditorState object
     const newContentState = ContentState.createFromBlockArray(newBlockArray);
