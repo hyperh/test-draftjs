@@ -127,7 +127,7 @@ export default class Home extends React.Component {
     // if (!this.state.isEditing) {
       const raw = convertToRaw(this.state.editorState.getCurrentContent());
 
-      if (!_.isEqual(raw, R.dissoc('_id', nextProps.raw);)) {
+      if (!_.isEqual(raw, R.dissoc('_id', nextProps.raw))) {
         const contentBlocks = convertFromRaw(nextProps.raw);
         const contentState = ContentState.createFromBlockArray(contentBlocks);
         this._injectChanges.bind(this)(contentState);
