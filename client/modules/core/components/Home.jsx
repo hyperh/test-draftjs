@@ -17,7 +17,6 @@ export default class Home extends React.Component {
 
     this.state = {
       editorState: EditorState.createEmpty(decorator),
-      isEditing: false,
       releaseLockOnBlur: true,
     };
     this.locks = [];
@@ -152,6 +151,19 @@ export default class Home extends React.Component {
       </div>
     );
   }
+}
+
+function focusOnLockedBlock(editorState, locks) {
+  const selectionState = editorState.getSelection();
+
+  const hasFocus = selectionState.getHasFocus();
+  const focusKey = selectionState.getFocusKey();
+  const lockedKeys = locks.map(lock => lock.blockKey);
+
+  if (hasFocus && R.contains(focusKey, lockedKeys)) {
+    return true;
+  }
+  return false;
 }
 
 function getSelectedBlocks(editorState) {
