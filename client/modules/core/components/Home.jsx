@@ -88,6 +88,8 @@ export default class Home extends React.Component {
   _mergeBlockArrays(newBlocks, selectedBlocks) {
     const contentState = this.state.editorState.getCurrentContent();
 
+    // New blocks is from the server, I create a new line, 10 blocks. Server is 9 blocks.
+    // But this function only operates on the server's 9 blocks. so it will always lag you.
     return newBlocks.map( newBlock => {
       const key = newBlock.getKey();
       const clientBlock = contentState.getBlockForKey(key);
