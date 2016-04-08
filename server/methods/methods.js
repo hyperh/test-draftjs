@@ -1,19 +1,59 @@
 import {Meteor} from 'meteor/meteor';
-import {Notes, Locks} from '/lib/collections';
+import {Notes, Locks, Widgets} from '/lib/collections';
 import R from 'ramda';
 import {check} from 'meteor/check';
 
 export default function () {
   Meteor.methods({
     create() {
-      const id = Notes.insert({});
+      const id = Notes.insert({widgets: []});
       return id;
     }
   });
 
   Meteor.methods({
     remove({noteId}) {
+      check(arguments[0], {
+        noteId: String
+      });
+
       Notes.remove(noteId);
+    }
+  });
+
+  Meteor.methods({
+    addWidget({noteId}) {
+      check(arguments[0], {
+        noteId: String
+      });
+
+      const widgetId = Widgets.insert({
+        type: 'default',
+        noteId
+      });
+
+      const note = Notes.findOne(noteId);
+      const newWidgets = R.append(widgetId, note.widgets);
+      Notes.update(noteId, {
+        $set: { widgets: newWidgets }
+      });
+    }
+  });
+
+  Meteor.methods({
+    removeWidget({noteId, widgetId}) {
+      check(arguments[0], {
+        noteId: String,
+        widgetId: String
+      });
+
+    //   Widgets.remove(widgetId);
+
+    //   const note = Notes.findOne(noteId);
+    //   const newWidgets = R.note.widgets;
+    //   Notes.update(noteId, {
+    //     $set: { widgets: newWidgets }
+    //   });
     }
   });
 

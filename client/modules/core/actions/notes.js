@@ -33,5 +33,11 @@ export default {
         username: usernameOrEmail
       });
     }
+  },
+
+  addWidget({Meteor}, noteId) {
+    Meteor.call('addWidget', {noteId}, err => {
+      if (err) { alert(err); }
+    });
   }
 };
