@@ -11,12 +11,14 @@ export default class Home extends React.Component {
   }
 
   renderWidgets() {
-    const {widgets} = this.props;
+    const {widgets, removeWidget, noteId} = this.props;
     return widgets.map(widget => {
       return (
         <Widget
           type={widget.type}
+          noteId={noteId}
           widgetId={widget._id}
+          removeWidget={removeWidget}
         />
       );
     });

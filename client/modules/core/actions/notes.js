@@ -39,5 +39,11 @@ export default {
     Meteor.call('addWidget', {noteId}, err => {
       if (err) { alert(err); }
     });
+  },
+
+  removeWidget({Meteor}, noteId, widgetId) {
+    Meteor.call('removeWidget', {noteId, widgetId}, err => {
+      if (err) { alert(err); }
+    });
   }
 };
