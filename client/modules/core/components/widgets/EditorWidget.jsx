@@ -6,14 +6,18 @@ export default class EditorWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: EditorState.createEmpty()
+      editorState: EditorState.createEmpty(),
     };
+    this.onChange = (editorState) => this.setState({editorState});
   }
 
   render() {
     return (
       <Widget>
-        <Editor editorState={this.state.editorState} />
+        <Editor
+          editorState={this.state.editorState}
+          onChange={this.onChange}
+        />
       </Widget>
     );
   }
