@@ -12,7 +12,7 @@ export default class Home extends React.Component {
   constructor(props) {
     super(props);
 
-    const decorator = new CompositeDecorator([
+    this.decorator = new CompositeDecorator([
       {
         strategy: isBlockLocked.bind(this),
         component: LockedBlock,
@@ -20,7 +20,7 @@ export default class Home extends React.Component {
     ]);
 
     this.state = {
-      editorState: null, // EditorState.createEmpty(decorator),
+      editorState: undefined,
       releaseLockOnBlur: true,
       isEditing: false
     };
@@ -101,29 +101,38 @@ export default class Home extends React.Component {
   _injectChanges(contentState) {
     // Getting current data
     const { editorState } = this.state;
-    const currentSelectionState = editorState.getSelection();
+    let newState;
+    if (editorState) {
+      const currentSelectionState = editorState.getSelection();
 
-    // Get the two block arrays and then merge them to form a new one
-    const newContentBlocks = contentState.getBlocksAsArray();       // from server
-    console.log(`-----`);
-    console.log(`_injectChanges`);
-    console.log(`newContentBlocks ${newContentBlocks.length}`);
-    const selectedBlocks = getSelectedBlocks(editorState);    // from user selection
-    const newBlockArray = this._mergeBlockArrays.bind(this)(newContentBlocks, selectedBlocks, contentState);
+      // Get the two block arrays and then merge them to form a new one
+      const newContentBlocks = contentState.getBlocksAsArray();       // from server
+      console.log(`-----`);
+      console.log(`_injectChanges`);
+      console.log(`newContentBlocks ${newContentBlocks.length}`);
+      const selectedBlocks = getSelectedBlocks(editorState);    // from user selection
+      const newBlockArray = this._mergeBlockArrays.bind(this)(newContentBlocks, selectedBlocks, contentState);
 
-    // Wrapping it all back up into an EditorState object
-    const newContentState = ContentState.createFromBlockArray(newBlockArray);
-    const newEditorState = EditorState.push(editorState, newContentState);
+      // Wrapping it all back up into an EditorState object
+      const newContentState = ContentState.createFromBlockArray(newBlockArray);
+      const newEditorState = EditorState.push(editorState, newContentState);
 
-    const hasFocus = currentSelectionState.getHasFocus();
-    const maintainSelection = hasFocus ? EditorState.forceSelection : EditorState.acceptSelection;
-    const newState = maintainSelection(newEditorState, currentSelectionState);
+      const hasFocus = currentSelectionState.getHasFocus();
+      const maintainSelection = hasFocus ? EditorState.forceSelection : EditorState.acceptSelection;
+      newState = maintainSelection(newEditorState, currentSelectionState);
+    }
+    else {
+      const editorStateEmpty = EditorState.createEmpty(this.decorator);
+      newState = EditorState.push(editorStateEmpty, contentState);
+    }
 
     this.setState({editorState: newState});
   }
 
   componentWillReceiveProps(nextProps) {
     this.locks = nextProps.locks;
+    const {editorState} = this.state;
+
     const newRawContent = nextProps.raw;
     const userId = this.props.user ? this.props.user._id : nextProps.user._id;
     const clientIsAuthor = newRawContent && newRawContent.authorId === userId;
@@ -131,11 +140,15 @@ export default class Home extends React.Component {
     if (!clientIsAuthor && nextProps.raw) {
       const contentBlocks = convertFromRaw(nextProps.raw);
       const newContentState = ContentState.createFromBlockArray(contentBlocks);
-      const currentContentState = this.state.editorState.getCurrentContent();
 
-      // make sure server is up-to-date with client blocks before injecting
-      const blockKeysMatch = checkServerHasClientKeys(newContentState, currentContentState);
-      if (blockKeysMatch) {
+      if (editorState) {
+        const currentContentState = editorState.getCurrentContent();
+        // make sure server is up-to-date with client blocks before injecting
+        const blockKeysMatch = checkServerHasClientKeys(newContentState, currentContentState);
+        if (blockKeysMatch) {
+          this._injectChanges.bind(this)(newContentState);
+        }
+      } else {
         this._injectChanges.bind(this)(newContentState);
       }
     }
@@ -164,13 +177,15 @@ export default class Home extends React.Component {
         </div>
 
         <div className="editor">
-          <Editor
-            editorState={this.state.editorState}
-            onChange={this.onChange.bind(this, rawId)}
-            handleKeyCommand={handleKeyCommand}
-            keyBindingFn={myKeyBindingFn.bind(this)}
-            ref={ref => this.editor = ref}
-          />
+          {this.state.editorState ?
+            <Editor
+              editorState={this.state.editorState}
+              onChange={this.onChange.bind(this, rawId)}
+              handleKeyCommand={handleKeyCommand}
+              keyBindingFn={myKeyBindingFn.bind(this)}
+              ref={ref => this.editor = ref}
+            /> : null
+          }
         </div>
         <input type="text" ref={ x => this._lockBlockId = x } />
 
