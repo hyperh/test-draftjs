@@ -18,11 +18,13 @@ export const composer = ({context}, onData) => {
     const noteId = LocalState.get('noteId');
     const user = LocalState.get('fakeUser');
     const notes = Collections.Notes.find({}).fetch();
+    const widgets = Collections.Widgets.find({noteId}).fetch();
 
     onData(null, {
       noteId,
       user,
-      notes
+      notes,
+      widgets
     });
   }
 };

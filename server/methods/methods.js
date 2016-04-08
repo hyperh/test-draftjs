@@ -47,13 +47,14 @@ export default function () {
         widgetId: String
       });
 
-    //   Widgets.remove(widgetId);
+      Widgets.remove(widgetId);
 
-    //   const note = Notes.findOne(noteId);
-    //   const newWidgets = R.note.widgets;
-    //   Notes.update(noteId, {
-    //     $set: { widgets: newWidgets }
-    //   });
+      const note = Notes.findOne(noteId);
+      const toDeleteIndex = R.findIndex(id => id === widgetId, note.widgets);
+      const newWidgets = R.remove(toDeleteIndex, 1);
+      Notes.update(noteId, {
+        $set: { widgets: newWidgets }
+      });
     }
   });
 

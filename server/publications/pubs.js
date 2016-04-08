@@ -5,7 +5,8 @@ export default function () {
   Meteor.publish('all', function () {
     return [
       Collections.Notes.find({}),
-      Collections.Locks.find({})
+      Collections.Locks.find({}),
+      Collections.Widgets.find({})
     ];
   });
 }

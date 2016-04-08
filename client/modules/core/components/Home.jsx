@@ -11,13 +11,15 @@ export default class Home extends React.Component {
   }
 
   renderWidgets() {
-    const arr = [ 0,1,2,3,4 ];
-    const widgets = arr.map(i => (
-      <Widget arg={i}>
-      </Widget>
-    ));
-
-    return R.append(<EditorWidget />, widgets);
+    const {widgets} = this.props;
+    return widgets.map(widget => {
+      return (
+        <Widget
+          type={widget.type}
+          widgetId={widget._id}
+        />
+      );
+    });
   }
 
   render() {

@@ -2,11 +2,10 @@ import React from 'react';
 
 export default class Widget extends React.Component {
   render() {
-    const {arg} = this.props;
+    const {type, widgetId} = this.props;
     return (
       <div>
-        A widget. Arg is { arg }
-        { this.props.children }
+        type: {type}, widgetId: {widgetId}
       </div>
     );
   }
