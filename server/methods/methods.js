@@ -1,12 +1,17 @@
 import {Meteor} from 'meteor/meteor';
 import {RawDraftContentStates, Locks} from '/lib/collections';
 import R from 'ramda';
+import {EditorState, convertToRaw} from 'draft-js';
 import {check} from 'meteor/check';
 
 export default function () {
   Meteor.methods({
-    create({rawDraftContentState}) {
-      const rawId = RawDraftContentStates.insert(rawDraftContentState);
+    create() {
+      const blankContentState = EditorState
+        .createEmpty()
+        .getCurrentContent();
+      const rawContentState = convertToRaw(blankContentState);
+      const rawId = RawDraftContentStates.insert(rawContentState);
       return rawId;
     }
   });
