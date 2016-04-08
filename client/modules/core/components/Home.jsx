@@ -20,7 +20,7 @@ export default class Home extends React.Component {
     ]);
 
     this.state = {
-      editorState: EditorState.createEmpty(decorator),
+      editorState: null, // EditorState.createEmpty(decorator),
       releaseLockOnBlur: true,
       isEditing: false
     };
@@ -85,70 +85,17 @@ export default class Home extends React.Component {
     }
   }
 
-  _mergeBlockArrays(newBlocks, selectedBlocks, newContentState) {
+  _mergeBlockArrays(newBlocks, selectedBlocks) {
     const contentState = this.state.editorState.getCurrentContent();
-    const clientBlocks = contentState.getBlocksAsArray();
-    const getKeys = R.map(x => x.getKey());
+    const selectedBlockKeys = selectedBlocks.map(x => x.getKey());
 
-    const newBlockKeys = getKeys(newBlocks);
-    const clientBlockKeys = getKeys(clientBlocks);
-    const selectedBlockKeys = getKeys(selectedBlocks);
-
-    const blocksDeleted = R.difference(clientBlockKeys, newBlockKeys);
-    const blocksAdded = R.difference(newBlockKeys, clientBlockKeys);
-    const blocksAddedAfter = blocksAdded.map( key => newContentState.getKeyBefore(key));
-
-    // make temp array
-    let temp = [];
-
-    // if a new block is to be added to the top, push to temp
-    const topBlockIndex = R.indexOf(null, blocksAddedAfter);
-    if (topBlockIndex >= 0) {
-      const key = blocksAdded[topBlockIndex];
-      temp.push(newContentState.getBlockForKey(key));
-    }
-
-    // for each client block
-    clientBlocks.map( clientBlock => {
-      const key = clientBlock.getKey();
-      const getServerBlock = myKey => newContentState.getBlockForKey(myKey);
-
-      // if user is currently on this block
+    return newBlocks.map( newBlock => {
+      const key = newBlock.getKey();
+      const clientBlock = contentState.getBlockForKey(key);
       const isSelected = R.contains(key, selectedBlockKeys);
-      if (isSelected) {
-        // push client block
-        temp.push(clientBlock);
-      } else {
-        // push server block
-        temp.push(getServerBlock(key));
-      }
 
-      // check if there is a block to be added after this one
-      const newBlockAfterIndex = R.indexOf(key, blocksAddedAfter);
-      if (newBlockAfterIndex >= 0) {
-        // yes, get the key of the block we want to add and push to temp
-        const addKey = blocksAdded[newBlockAfterIndex];
-        temp.push(getServerBlock(addKey));
-      }
+      return isSelected ? clientBlock : newBlock;
     });
-
-    const finalArray = temp.map( block => {
-      const key = block.getKey();
-      if (R.contains(key, blocksDeleted)) {
-        return null;
-      }
-      return block;
-    });
-
-    return R.difference(finalArray, [null]);
-
-    // return newBlocks.map( newBlock => {
-    //   const key = newBlock.getKey();
-    //   const clientBlock = contentState.getBlockForKey(key);
-    //   const isSelected = R.contains(key, selectedBlocks.map(x => x.getKey()));
-
-    //   return isSelected ? clientBlock : newBlock;
-    // });
   }
 
   _injectChanges(contentState) {
@@ -177,17 +124,21 @@ export default class Home extends React.Component {
 
   componentWillReceiveProps(nextProps) {
     this.locks = nextProps.locks;
+    const newRawContent = nextProps.raw;
+    const userId = this.props.user ? this.props.user._id : nextProps.user._id;
+    const clientIsAuthor = newRawContent && newRawContent.authorId === userId;
 
-    // if (!this.state.isEditing) {
-      if (nextProps.raw && nextProps.raw.authorId !== this.props.user._id) {
-        const contentBlocks = convertFromRaw(nextProps.raw);
-        const contentState = ContentState.createFromBlockArray(contentBlocks);
-        this._injectChanges.bind(this)(contentState);
-        // const {editorState} = this.state;
-        // const newState = EditorState.push(editorState, contentState);
-        // this.setState({editorState: newState});
+    if (!clientIsAuthor && nextProps.raw) {
+      const contentBlocks = convertFromRaw(nextProps.raw);
+      const newContentState = ContentState.createFromBlockArray(contentBlocks);
+      const currentContentState = this.state.editorState.getCurrentContent();
+
+      // make sure server is up-to-date with client blocks before injecting
+      const blockKeysMatch = checkServerHasClientKeys(newContentState, currentContentState);
+      if (blockKeysMatch) {
+        this._injectChanges.bind(this)(newContentState);
       }
-    // }
+    }
   }
 
   render() {
@@ -247,6 +198,24 @@ function handleKeyCommand(command) {
     return true;
   }
   return false;
+}
+
+function checkServerHasClientKeys(newContent, currentContent) {
+  function getBlockKeyArray(contentState) {
+    const blockArray = contentState.getBlocksAsArray();
+    return blockArray.map( x => x.getKey());
+  }
+
+  const newKeys = getBlockKeyArray(newContent);
+  const currentKeys = getBlockKeyArray(currentContent);
+
+  console.log(`newKeys`);
+  console.log(newKeys);
+  console.log(`currentKeys`);
+  console.log(currentKeys);
+
+  // server has all the keys that the client has
+  return R.difference(currentKeys, newKeys).length === 0;
 }
 
 function myKeyBindingFn(e) {
