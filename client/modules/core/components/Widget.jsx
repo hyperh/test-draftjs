@@ -5,7 +5,8 @@ export default class Widget extends React.Component {
     const {arg} = this.props;
     return (
       <div>
-        A widget. Arg is {arg}
+        A widget. Arg is { arg }
+        { this.props.children }
       </div>
     );
   }

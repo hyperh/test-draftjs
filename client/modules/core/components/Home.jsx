@@ -2,21 +2,18 @@ import React from 'react';
 import Login from './Login.jsx';
 import Widget from './Widget.jsx';
 import ListItem from './ListItem.jsx';
+import R from 'ramda';
+import EditorWidget from './EditorWidget.jsx';
 
 export default class Home extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      editorState: undefined,
-      releaseLockOnBlur: true,
-      isEditing: false
-    };
-  }
-
   renderWidgets() {
-    const arr = [ 1,2,3,4,5 ];
-    return arr.map(i => <Widget arg={i} />);
+    const arr = [ 0,1,2,3,4 ];
+    const widgets = arr.map(i => (
+      <Widget arg={i}>
+      </Widget>
+    ));
+
+    return R.append(<EditorWidget />, widgets);
   }
 
   render() {
