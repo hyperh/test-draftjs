@@ -19,7 +19,6 @@ export default function () {
 
   Meteor.methods({
     '_wipeAndInitialize'() {
-      RawDraftContentStates.remove({});
       Locks.remove({});
       Meteor.users.remove({});
 
