@@ -1,9 +1,9 @@
 import React from 'react';
 import Login from './Login.jsx';
-import Widget from './Widget.jsx';
+import Widget from './widgets/Widget.jsx';
 import ListItem from './ListItem.jsx';
 import R from 'ramda';
-import EditorWidget from './EditorWidget.jsx';
+import EditorWidget from './widgets/EditorWidget.jsx';
 
 export default class Home extends React.Component {
   renderWidgets() {
@@ -35,7 +35,7 @@ export default class Home extends React.Component {
               {this.renderWidgets()}
             </div> : null
         }
-
+        <button>Add widget</button>
         <button onClick={create}>New note</button>
 
         {notes.map(note => <ListItem select={select} remove={remove} noteId={note._id} />)}
