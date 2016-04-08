@@ -6,11 +6,13 @@ export default class Widget extends React.Component {
   }
 
   render() {
-    const {type, widgetId, removeWidget, noteId} = this.props;
+    const {widget, removeWidget, noteId} = this.props;
+    const {type, _id} = widget;
+
     return (
       <div>
-        type: {type}, widgetId: {widgetId}
-        <span><button onClick={removeWidget.bind(this, noteId, widgetId)}>Remove</button></span>
+        type: {type}, widgetId: {_id}
+        <span><button onClick={removeWidget.bind(this, noteId, _id)}>Remove</button></span>
       </div>
     );
   }

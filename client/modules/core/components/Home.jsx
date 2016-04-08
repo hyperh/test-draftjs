@@ -15,9 +15,8 @@ export default class Home extends React.Component {
     return widgets.map(widget => {
       return (
         <Widget
-          type={widget.type}
+          widget={widget}
           noteId={noteId}
-          widgetId={widget._id}
           removeWidget={removeWidget}
         />
       );
