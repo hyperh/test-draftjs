@@ -1,20 +1,12 @@
 import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
 import Home from '../components/Home.jsx';
-import {convertFromRaw, ContentState} from 'draft-js';
-import R from 'ramda';
 
 const depsMapper = (context, actions) => ({
   context: () => context,
   create: actions.notes.create,
   select: actions.notes.select,
   remove: actions.notes.remove,
-  login: actions.notes.login,
-  takeOver: actions.notes.takeOver,
-  requestLocks: actions.notes.requestLocks,
-  requestAndReleaseLocks: actions.notes.requestAndReleaseLocks,
-  releaseAllLocks: actions.notes.releaseAllLocks,
-  releaseOtherLocks: actions.notes.releaseOtherLocks,
-  editBlock: actions.notes.editBlock
+  login: actions.notes.login
 });
 
 export const composer = ({context}, onData) => {
@@ -22,26 +14,14 @@ export const composer = ({context}, onData) => {
 
   const sub = Meteor.subscribe('all');
   if (sub.ready()) {
-    const rawDraftContentStates = Collections.RawDraftContentStates.find({}).fetch();
-    const rawId = LocalState.get('selectedId');
-    const getRaw = () => {
-      if (rawId) {
-        const raw = Collections.RawDraftContentStates.findOne(rawId);
-        return raw;
-        // const contentBlocks = convertFromRaw(raw);
-        // const contentState = ContentState.createFromBlockArray(contentBlocks);
-        // return contentState;
-      }
-      return undefined;
-    };
+    const noteId = LocalState.get('noteId');
     const user = LocalState.get('fakeUser');
+    const notes = Collections.Notes.find({}).fetch();
 
     onData(null, {
-      rawId,
-      raw: getRaw(),
-      rawDraftContentStates,
+      noteId,
       user,
-      locks: Collections.Locks.find().fetch()
+      notes
     });
   }
 };

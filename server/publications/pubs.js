@@ -4,7 +4,7 @@ import {Meteor} from 'meteor/meteor';
 export default function () {
   Meteor.publish('all', function () {
     return [
-      Collections.RawDraftContentStates.find({}),
+      Collections.Notes.find({}),
       Collections.Locks.find({})
     ];
   });

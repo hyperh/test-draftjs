@@ -1,25 +1,20 @@
-import {EditorState, convertToRaw} from 'draft-js';
-
 export default {
   create({Meteor, LocalState}) {
-    const editorState = EditorState.createEmpty();
-    const contentState = editorState.getCurrentContent();
-    const rawDraftContentState = convertToRaw(contentState);
-    Meteor.call('create', {rawDraftContentState}, (err, res) => {
+    Meteor.call('create', (err, res) => {
       if (err) { alert(err); }
-      else { LocalState.set('selectedId', res); }
+      else { LocalState.set('noteId', res); }
     });
   },
 
-  select({LocalState}, id) {
-    LocalState.set('selectedId', id);
+  select({LocalState}, noteId) {
+    LocalState.set('noteId', noteId);
   },
 
-  remove({Meteor, LocalState}, rawId) {
-    const selectedId = LocalState.get('selectedId');
-    if (selectedId === rawId) { LocalState.set('selectedId', undefined); }
+  remove({Meteor, LocalState}, noteId) {
+    const selectedId = LocalState.get('noteId');
+    if (selectedId === noteId) { LocalState.set('noteId', undefined); }
 
-    Meteor.call('remove', {rawId});
+    Meteor.call('remove', {noteId});
   },
 
   login({Meteor, LocalState, FlowRouter}, usernameOrEmail, password) {
@@ -37,44 +32,6 @@ export default {
         _id: 1,
         username: usernameOrEmail
       });
-    }
-  },
-
-  requestAndReleaseLocks({Meteor}, rawId, requestedBlockKeys, releaseBlockKeys, user) {
-    if (user) {
-      Meteor.call('requestAndReleaseLocks', {rawId, requestedBlockKeys, releaseBlockKeys, user}, (err) => {
-        if (err) { alert(err); }
-      });
-    }
-  },
-
-  // releaseLocks({Meteor}, rawId, blockKeys, user) {
-  //   if (user) {
-  //     Meteor.call('releaseLocks', {rawId, blockKeys, user}, err => {
-  //       if (err) { alert(err); }
-  //     });
-  //   }
-  // },
-
-  releaseAllLocks({Meteor}, user) {
-    console.log('releaseAllLocks');
-    console.log(user);
-    Meteor.call('releaseAllLocks', {user}, (err) => {
-      if (err) { alert(err); }
-    });
-  },
-
-  releaseOtherLocks({Meteor}, rawId, blockKeys, user) {
-    if (user) {
-      Meteor.call('releaseOtherLocks', {rawId, blockKeys, user}, (err) => {
-        if (err) { alert(err); }
-      });
-    }
-  },
-
-  editBlock({Meteor}, rawId, user, rawDraftContentState, block) {
-    if (user) {
-      Meteor.call('editBlock', {rawId, user, rawDraftContentState, block});
     }
   }
 };
