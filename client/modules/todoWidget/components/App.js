@@ -31,7 +31,7 @@ export default class App extends React.Component {
 
   updateState(todos) {
     this.setState({todos});
-    this.props.updateServer(todos);   // a function passed in by props
+    // this.props.updateServer(todos);   // a function passed in by props
   }
 
   addTask(text) {
