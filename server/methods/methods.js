@@ -53,12 +53,6 @@ export default function () {
       const toDeleteIndex = R.findIndex(id => id === widgetId, note.widgets);
       const newWidgets = R.remove(toDeleteIndex, 1, note.widgets);
 
-      console.log(`--------`);
-      console.log(widgetId);
-      console.log(note.widgets);
-      console.log(toDeleteIndex);
-      console.log(newWidgets);
-
       Notes.update(noteId, {
         $set: { widgets: newWidgets }
       });
