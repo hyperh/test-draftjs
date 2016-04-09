@@ -45,5 +45,11 @@ export default {
     Meteor.call('removeWidget', {noteId, widgetId}, err => {
       if (err) { alert(err); }
     });
+  },
+
+  moveWidget({Meteor}, noteId, widgetId, position) {
+    Meteor.call('moveWidget', {noteId, widgetId, position}, err => {
+      if (err) { alert(err); }
+    });
   }
 };

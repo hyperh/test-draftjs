@@ -1,25 +1,22 @@
-import React from 'react';
-import Login from './Login.jsx';
-import Widget from './widgets/Widget.jsx';
-import ListItem from './ListItem.jsx';
-import R from 'ramda';
-import EditorWidget from './widgets/EditorWidget.jsx';
+import React, { Component } from 'react';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
 
-export default class Home extends React.Component {
+import Login from './Login.jsx';
+import ListItem from './ListItem.jsx';
+import Note from './Note.jsx';
+
+class Home extends Component {
   constructor(props) {
     super(props);
   }
 
-  renderWidgets() {
-    const {widgets, removeWidget, noteId} = this.props;
-    return widgets.map(widget => {
-      return <EditorWidget />
-    });
-  }
-
   render() {
     const {
-      create, select, noteId, remove, login, user, notes, addWidget
+      noteId,
+      create, select, remove, login,
+      user, notes, widgets,
+      addWidget, removeWidget, moveWidget
     } = this.props;
 
     return (
@@ -31,17 +28,23 @@ export default class Home extends React.Component {
         <h1>Note {noteId}</h1>
         {
           noteId ?
-            <div className="editor">
-              {this.renderWidgets()}
-            </div> : null
+          <Note
+            noteId={noteId}
+            widgets={widgets}
+            removeWidget={removeWidget}
+            moveWidget={moveWidget}
+          /> :
+          null
         }
+
         <button onClick={addWidget.bind(null, noteId)}>Add widget</button>
         <button onClick={create}>New note</button>
 
         {notes.map(note =>
-          <ListItem select={select} remove={remove} noteId={note._id} />
+          <ListItem key={note._id} select={select} remove={remove} noteId={note._id} />
         )}
       </div>
     );
   }
 }
+export default DragDropContext(HTML5Backend)(Home);

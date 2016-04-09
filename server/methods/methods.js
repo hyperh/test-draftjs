@@ -6,7 +6,7 @@ import {check} from 'meteor/check';
 export default function () {
   Meteor.methods({
     create() {
-      const id = Notes.insert({widgets: []});
+      const id = Notes.insert({widgetIds: []});
       return id;
     }
   });
@@ -33,9 +33,9 @@ export default function () {
       });
 
       const note = Notes.findOne(noteId);
-      const newWidgets = R.append(widgetId, note.widgets);
+      const newWidgets = R.append(widgetId, note.widgetIds);
       Notes.update(noteId, {
-        $set: { widgets: newWidgets }
+        $set: { widgetIds: newWidgets }
       });
     }
   });
@@ -50,17 +50,30 @@ export default function () {
       Widgets.remove(widgetId);
 
       const note = Notes.findOne(noteId);
-      const toDeleteIndex = R.findIndex(id => id === widgetId, note.widgets);
-      const newWidgets = R.remove(toDeleteIndex, 1, note.widgets);
-
-      console.log(`--------`);
-      console.log(widgetId);
-      console.log(note.widgets);
-      console.log(toDeleteIndex);
-      console.log(newWidgets);
+      const toDeleteIndex = R.findIndex(id => id === widgetId, note.widgetIds);
+      const newWidgets = R.remove(toDeleteIndex, 1, note.widgetIds);
 
       Notes.update(noteId, {
-        $set: { widgets: newWidgets }
+        $set: { widgetIds: newWidgets }
+      });
+    }
+  });
+
+  Meteor.methods({
+    moveWidget({noteId, widgetId, position}) {
+      check(arguments[0], {
+        noteId: String,
+        widgetId: String,
+        position: Number
+      });
+
+      const note = Notes.findOne(noteId);
+      const indexToRemove = R.findIndex(i => i === widgetId)(note.widgetIds);
+      const widgetsLessRemoved = R.remove(indexToRemove, 1, note.widgetIds);
+      const newOrderedWidgets = R.insert(position, widgetId, widgetsLessRemoved);
+
+      Notes.update(noteId, {
+        $set: { widgetIds: newOrderedWidgets }
       });
     }
   });
