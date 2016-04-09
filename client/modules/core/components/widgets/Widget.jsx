@@ -1,7 +1,7 @@
 import React from 'react';
 import { DragSource } from 'react-dnd';
 
-export default class Widget extends React.Component {
+class Widget extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -11,19 +11,19 @@ export default class Widget extends React.Component {
     const {widget, removeWidget, noteId} = this.props;
     const {type, _id} = widget;
 
-    return (
-      <div>
+    return connectDragSource(
+      <div style={{ opacity: isDragging ? 0.5 : 1 }}>
         type: {type}, widgetId: {_id}
         <span><button onClick={removeWidget.bind(this, noteId, _id)}>Remove</button></span>
       </div>
     );
   }
 }
-// Widget.propTypes = {
-//     // Injected by React DnD from collect function
-//   connectDragSource: React.PropTypes.func.isRequired,
-//   isDragging: React.PropTypes.bool.isRequired
-// };
+Widget.propTypes = {
+    // Injected by React DnD from collect function
+  connectDragSource: React.PropTypes.func.isRequired,
+  isDragging: React.PropTypes.bool.isRequired
+};
 
 const widgetSource = {
   beginDrag(props) {
@@ -38,4 +38,4 @@ function collect(connect, monitor) {
   };
 }
 
-// export default DragSource('widget', widgetSource, collect)(Widget);
+export default DragSource('widget', widgetSource, collect)(Widget);

@@ -1,32 +1,16 @@
 import React from 'react';
 import Login from './Login.jsx';
-import Widget from './widgets/Widget.jsx';
 import ListItem from './ListItem.jsx';
-import R from 'ramda';
-import EditorWidget from './widgets/EditorWidget.jsx';
+import Note from './Note.jsx';
 
 export default class Home extends React.Component {
   constructor(props) {
     super(props);
   }
 
-  renderWidgets() {
-    const {widgets, removeWidget, noteId} = this.props;
-    return widgets.map(widget => {
-      return (
-        <Widget
-          key={widget._id}
-          widget={widget}
-          noteId={noteId}
-          removeWidget={removeWidget}
-        />
-      );
-    });
-  }
-
   render() {
     const {
-      create, select, noteId, remove, login, user, notes, addWidget
+      create, select, noteId, remove, login, user, notes, addWidget, widgets, removeWidget
     } = this.props;
 
     return (
@@ -36,12 +20,8 @@ export default class Home extends React.Component {
         <button onClick={login.bind(null, 'bob', 1)}>Bob</button>
 
         <h1>Note {noteId}</h1>
-        {
-          noteId ?
-            <div className="editor">
-              {this.renderWidgets()}
-            </div> : null
-        }
+        {noteId ? <Note noteId={noteId} widgets={widgets} removeWidget={removeWidget} /> : null}
+
         <button onClick={addWidget.bind(null, noteId)}>Add widget</button>
         <button onClick={create}>New note</button>
 
