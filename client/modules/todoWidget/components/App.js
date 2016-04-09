@@ -10,16 +10,17 @@ import './placeholder.css';
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      todos: [],
-      actions: {
-        addTask: this.addTask.bind(this),
-        removeTask: this.removeTask.bind(this),
-        toggleTask: this.toggleTask.bind(this),
-        updateTask: this.updateTask.bind(this),
-        toggleAll: this.toggleAll.bind(this),
-        clearCompleted: this.clearCompleted.bind(this),
-      }
+    this.state = {todos: []};
+  }
+
+  getActions() {
+    return {
+      addTask: this.addTask.bind(this),
+      removeTask: this.removeTask.bind(this),
+      toggleTask: this.toggleTask.bind(this),
+      updateTask: this.updateTask.bind(this),
+      toggleAll: this.toggleAll.bind(this),
+      clearCompleted: this.clearCompleted.bind(this),
     };
   }
 
@@ -86,7 +87,8 @@ export default class App extends React.Component {
       position: 'relative',
       boxSizing: 'border-box',
     };
-    const {todos, actions} = this.state;
+    const {todos} = this.state;
+    const actions = this.getActions();
     return (
       <Paper className='todoapp' style={style}>
         <Header addTask={actions.addTask} />
