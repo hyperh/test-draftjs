@@ -6,7 +6,7 @@ import ToggleIcon from 'material-ui/lib/svg-icons/hardware/keyboard-arrow-down';
 import Footer from './Footer';
 import TodoItem from './TodoItem';
 
-import { SHOW_ALL, SHOW_COMPLETED, SHOW_ACTIVE } from '../constants/TodoFilters';
+import { SHOW_ALL, SHOW_COMPLETED, SHOW_ACTIVE } from '../constants/todoFilters';
 
 export default class Body extends React.Component {
   constructor(props) {

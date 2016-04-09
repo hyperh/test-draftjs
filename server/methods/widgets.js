@@ -15,7 +15,7 @@ export default function () {
       const widgetId = Widgets.insert({
         type,
         noteId,
-        data: data ? data : {}
+        data: data ? data : null
       });
 
       const note = Notes.findOne(noteId);

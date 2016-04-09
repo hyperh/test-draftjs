@@ -1,6 +1,6 @@
 export default {
-  add({Meteor}, noteId, type) {
-    Meteor.call('widgets.add', {noteId, type}, err => {
+  add({Meteor}, noteId, type, data) {
+    Meteor.call('widgets.add', {noteId, type, data}, err => {
       if (err) { alert(err); }
     });
   },

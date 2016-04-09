@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import DraftPasteProcessor from 'draft-js/lib/DraftPasteProcessor';
+import { ContentState, convertToRaw } from 'draft-js';
 
 import Login from './Login.jsx';
 import ListItem from './ListItem.jsx';
@@ -15,6 +17,25 @@ class Home extends Component {
     const { addWidget, noteId } = this.props;
     const type = this.input.value;
     addWidget(noteId, type);
+  }
+
+  addMeetingMinutes() {
+    const { addWidget, noteId } = this.props;
+    const type = 'editor';
+
+    const date = new Date();
+    const blockArray = DraftPasteProcessor.processHTML(
+      `
+        <h1>Meeting Minutes</h1>
+        <h2>Date: ${date.toUTCString()}</h2>
+      `
+    );
+    const contentState = ContentState.createFromBlockArray(blockArray);
+    const raw = convertToRaw(contentState);
+    console.log('raw');
+    console.log(raw);
+
+    addWidget(noteId, type, raw);
   }
 
   render() {
@@ -47,6 +68,7 @@ class Home extends Component {
         <button onClick={createNote}>New note</button>
         <span>
           <button onClick={this.handleAddWidget.bind(this)}>Add widget of type</button>
+          <button onClick={this.addMeetingMinutes.bind(this)}>Meeting minutes</button>
           <input type="text" ref={ref => this.input = ref }/>
         </span>
 
