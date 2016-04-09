@@ -32,9 +32,6 @@ class Home extends Component {
     );
     const contentState = ContentState.createFromBlockArray(blockArray);
     const raw = convertToRaw(contentState);
-    console.log('raw');
-    console.log(raw);
-
     addWidget(noteId, type, raw);
   }
 
