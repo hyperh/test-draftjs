@@ -63,4 +63,17 @@ export default function () {
       });
     }
   });
+
+  Meteor.methods({
+    'widgets.update'({widgetId, data}) {
+      check(arguments[0], {
+        widgetId: String,
+        data: Object
+      });
+
+      Widgets.update(widgetId, {
+        $set: { data }
+      });
+    }
+  });
 }

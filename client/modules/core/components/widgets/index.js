@@ -1,5 +1,5 @@
 import TestWidget from './TestWidget.jsx';
-import EditorWidget from './EditorWidget.jsx';
+import EditorWidget from '../../containers/editor_widget';
 
 export default {
   editor: EditorWidget,

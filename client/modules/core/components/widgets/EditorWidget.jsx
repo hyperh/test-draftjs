@@ -1,5 +1,5 @@
 import React from 'react';
-import {Editor, EditorState} from 'draft-js';
+import {Editor, EditorState, convertToRaw} from 'draft-js';
 
 export default class EditorWidget extends React.Component {
   constructor(props) {
@@ -7,8 +7,23 @@ export default class EditorWidget extends React.Component {
     this.state = {
       editorState: EditorState.createEmpty(),
     };
-    this.onChange = (editorState) => this.setState({editorState});
+
+    this.onChange = this.onChange.bind(this);
   }
+
+  onChange(editorState) {
+    const {
+      widget,
+      update
+    } = this.props;
+
+    const contentState = editorState.getCurrentContent();
+    const raw = convertToRaw(contentState);
+
+    update(widget._id, raw);
+    this.setState({editorState});
+  }
+
 
   render() {
     return (

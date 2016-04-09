@@ -15,5 +15,11 @@ export default {
     Meteor.call('widgets.move', {noteId, widgetId, position}, err => {
       if (err) { alert(err); }
     });
+  },
+
+  update({Meteor}, widgetId, data) {
+    Meteor.call('widgets.update', {widgetId, data}, err => {
+      if (err) { alert(err); }
+    });
   }
 };
