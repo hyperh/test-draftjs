@@ -60,6 +60,25 @@ export default function () {
   });
 
   Meteor.methods({
+    moveWidget({noteId, widgetId, position}) {
+      check(arguments[0], {
+        noteId: String,
+        widgetId: String,
+        position: Number
+      });
+
+      const note = Notes.findOne(noteId);
+      const indexToRemove = R.findIndex(i => i === widgetId)(note.widgets);
+      const widgetsLessRemoved = R.remove(indexToRemove, 1, note.widgets);
+      const newOrderedWidgets = R.insert(position, widgetId, widgetsLessRemoved);
+
+      note.update(noteId, {
+        $set: { widgets: newOrderedWidgets }
+      });
+    }
+  });
+
+  Meteor.methods({
     '_wipeAndInitialize'() {
       Locks.remove({});
       Meteor.users.remove({});
