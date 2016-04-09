@@ -27,7 +27,29 @@ class Home extends Component {
     const blockArray = DraftPasteProcessor.processHTML(
       `
         <h1>Meeting Minutes</h1>
+
         <h2>Date: ${date.toUTCString()}</h2>
+
+        <h3>Participants</h3>
+        <ul>
+          <li>Person 1</li>
+          <li>Person 2</li>
+          <li>Person 3</li>
+        </ul>
+
+        <h3>Notes</h3>
+        <ul>
+          <li>Note 1</li>
+          <li>Note 2</li>
+          <li>Note 3</li>
+        </ul>
+
+        <h3>Actions</h3>
+        <ul>
+          <li>Action 1</li>
+          <li>Action 2</li>
+          <li>Action 3</li>
+        </ul>
       `
     );
     const contentState = ContentState.createFromBlockArray(blockArray);
