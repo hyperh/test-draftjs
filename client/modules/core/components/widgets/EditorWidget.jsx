@@ -7,8 +7,8 @@ export default class EditorWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: props.widget ?
-        this._getNewState(EditorState.createEmpty(), props.widget.data) :
+      editorState: canGetNewState(props.widget) ?
+        _getNewState(EditorState.createEmpty(), props.widget.data) :
         EditorState.createEmpty()
     };
 
@@ -28,47 +28,17 @@ export default class EditorWidget extends React.Component {
     this.setState({editorState});
   }
 
-  _mergeBlockArrays(editorState, newBlocks, selectedBlocks) {
-    const contentState = editorState.getCurrentContent();
-
-    return newBlocks.map( newBlock => {
-      const key = newBlock.getKey();
-      const selectedBlock = contentState.getBlockForKey(key);
-      const isSelected = R.contains(key, selectedBlocks.map(x => x.getKey()));
-
-      return isSelected ? selectedBlock : newBlock;
-    });
-  }
-
-  _getNewState(editorState, raw) {
-    // Getting current data
-    const currentSelectionState = editorState.getSelection();
-
-    // Get the two block arrays and then merge them to form a new one
-    const newContentBlocks = convertFromRaw(raw);       // from server
-    const selectedBlocks = getSelectedBlocks(editorState);    // from user selection
-    const newBlockArray = this._mergeBlockArrays.bind(this)(
-      editorState, newContentBlocks, selectedBlocks
-    );
-
-    // Wrapping it all back up into an EditorState object
-    const newContentState = ContentState.createFromBlockArray(newBlockArray);
-    const newEditorState = EditorState.push(editorState, newContentState);
-
-    const hasFocus = currentSelectionState.getHasFocus();
-    const maintainSelection = hasFocus ? EditorState.forceSelection : EditorState.acceptSelection;
-    const newState = maintainSelection(newEditorState, currentSelectionState);
-    return newState;
-  }
-
   _injectChanges(editorState, raw) {
-    const newState = this._getNewState(editorState, raw);
+    const newState = _getNewState(editorState, raw);
     this.setState({editorState: newState});
   }
 
   componentWillReceiveProps(nextProps) {
     const { widget } = nextProps;
-    this._injectChanges.bind(this)(this.state.editorState, widget.data);
+
+    if (canGetNewState(widget)) {
+      this._injectChanges.bind(this)(this.state.editorState, widget.data);
+    }
   }
 
   render() {
@@ -81,6 +51,15 @@ export default class EditorWidget extends React.Component {
       </div>
     );
   }
+}
+
+function canGetNewState(widget) {
+  const hasData = widget && !R.isEmpty(widget.data);
+  const keys = R.keys(widget.data);
+  const expectedKeys = [ 'entityMap', 'blocks' ];
+  const hasAllKeys = R.isEmpty(R.difference(expectedKeys, keys));
+
+  return hasData && hasAllKeys;
 }
 
 function getSelectedBlocks(editorState) {
@@ -104,4 +83,37 @@ function getSelectedBlocks(editorState) {
     return blockArray.filter((_, i) => i >= index.start && i <= index.end);
   }
   return [];
+}
+
+function _mergeBlockArrays(editorState, newBlocks, selectedBlocks) {
+  const contentState = editorState.getCurrentContent();
+
+  return newBlocks.map( newBlock => {
+    const key = newBlock.getKey();
+    const selectedBlock = contentState.getBlockForKey(key);
+    const isSelected = R.contains(key, selectedBlocks.map(x => x.getKey()));
+
+    return isSelected ? selectedBlock : newBlock;
+  });
+}
+
+function _getNewState(editorState, raw) {
+  // Getting current data
+  const currentSelectionState = editorState.getSelection();
+
+  // Get the two block arrays and then merge them to form a new one
+  const newContentBlocks = convertFromRaw(raw);       // from server
+  const selectedBlocks = getSelectedBlocks(editorState);    // from user selection
+  const newBlockArray = _mergeBlockArrays(
+    editorState, newContentBlocks, selectedBlocks
+  );
+
+  // Wrapping it all back up into an EditorState object
+  const newContentState = ContentState.createFromBlockArray(newBlockArray);
+  const newEditorState = EditorState.push(editorState, newContentState);
+
+  const hasFocus = currentSelectionState.getHasFocus();
+  const maintainSelection = hasFocus ? EditorState.forceSelection : EditorState.acceptSelection;
+  const newState = maintainSelection(newEditorState, currentSelectionState);
+  return newState;
 }
