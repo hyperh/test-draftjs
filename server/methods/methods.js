@@ -28,7 +28,7 @@ export default function () {
       });
 
       const widgetId = Widgets.insert({
-        type: 'default',
+        type: 'test',
         noteId
       });
 

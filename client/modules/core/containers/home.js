@@ -26,12 +26,14 @@ export const composer = ({context}, onData) => {
       if (noteId) {
         const note = Collections.Notes.findOne(noteId);
         const widgets = Collections.Widgets.find({noteId}).fetch();
-
         const widgetOrder = note.widgetIds;
 
-        const groupById = R.groupBy(R.prop('_id'), widgets);
-        const sortById = R.map(id => groupById[id][0]);
-        return sortById(widgetOrder);
+        if (!R.isEmpty(widgets)) {
+          const groupById = R.groupBy(R.prop('_id'), widgets);
+          const sortById = R.map(id => groupById[id][0]);
+          return sortById(widgetOrder);
+        }
+        return [];
       }
       return [];
     };
