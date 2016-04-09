@@ -8,7 +8,7 @@ export default class EditorWidget extends React.Component {
     super(props);
     this.state = {
       editorState: canGetNewState(props.widget) ?
-        _getNewState(EditorState.createEmpty(), props.widget.data) :
+        getNewState(EditorState.createEmpty(), props.widget.data) :
         EditorState.createEmpty()
     };
 
@@ -29,7 +29,7 @@ export default class EditorWidget extends React.Component {
   }
 
   _injectChanges(editorState, raw) {
-    const newState = _getNewState(editorState, raw);
+    const newState = getNewState(editorState, raw);
     this.setState({editorState: newState});
   }
 
@@ -85,7 +85,7 @@ function getSelectedBlocks(editorState) {
   return [];
 }
 
-function _mergeBlockArrays(editorState, newBlocks, selectedBlocks) {
+function mergeBlockArrays(editorState, newBlocks, selectedBlocks) {
   const contentState = editorState.getCurrentContent();
 
   return newBlocks.map( newBlock => {
@@ -97,14 +97,14 @@ function _mergeBlockArrays(editorState, newBlocks, selectedBlocks) {
   });
 }
 
-function _getNewState(editorState, raw) {
+function getNewState(editorState, raw) {
   // Getting current data
   const currentSelectionState = editorState.getSelection();
 
   // Get the two block arrays and then merge them to form a new one
   const newContentBlocks = convertFromRaw(raw);       // from server
   const selectedBlocks = getSelectedBlocks(editorState);    // from user selection
-  const newBlockArray = _mergeBlockArrays(
+  const newBlockArray = mergeBlockArrays(
     editorState, newContentBlocks, selectedBlocks
   );
 
