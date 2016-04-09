@@ -3,6 +3,7 @@ import { findDOMNode } from 'react-dom';
 import { DragSource, DropTarget } from 'react-dnd';
 import _ from 'lodash';
 import { ItemTypes } from '/lib/constants';
+import DragHandle from './DragHandle.jsx';
 
 const widgetSource = {
   beginDrag(props) {
@@ -75,18 +76,9 @@ class DraggableWidget extends Component {
     const { isDragging, connectDragSource, connectDragPreview, connectDropTarget } = this.props;
     const { children } = this.props;
 
-    const handleStyle = {
-      backgroundColor: 'green',
-      width: '1rem',
-      height: '1rem',
-      display: 'inline-block',
-      marginRight: '0.75rem',
-      cursor: 'move'
-    };
-
     return connectDropTarget(connectDragPreview(
       <div style={{ opacity: isDragging ? 0 : 1 }}>
-        { connectDragSource(<div style={handleStyle} />) }
+        { connectDragSource(<div><DragHandle /></div>) } {/* div must be there */}
         { children }
       </div>
     ));
