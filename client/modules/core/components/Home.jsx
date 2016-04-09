@@ -13,13 +13,7 @@ export default class Home extends React.Component {
   renderWidgets() {
     const {widgets, removeWidget, noteId} = this.props;
     return widgets.map(widget => {
-      return (
-        <Widget
-          widget={widget}
-          noteId={noteId}
-          removeWidget={removeWidget}
-        />
-      );
+      return <EditorWidget />
     });
   }
 

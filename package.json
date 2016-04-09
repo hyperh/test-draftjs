@@ -2,7 +2,8 @@
   "name": "test-draft-js",
   "private": true,
   "scripts": {
-    "start": "meteor run"
+    "start": "meteor run",
+    "storybook": "start-storybook -p 9001"
   },
   "devDependencies": {
     "@kadira/storybook": "^1.1.0",
@@ -22,16 +23,21 @@
     "sinon": "1.17.x"
   },
   "dependencies": {
+    "classnames": "^2.2.3",
     "draft-js": "^0.3.0",
     "mantra-core": "^1.4.0",
+    "material-ui": "^0.15.0-alpha.2",
     "meteor-node-stubs": "~0.2.0",
     "ramda": "^0.18.0",
+    "raw-loader": "^0.5.1",
     "react": "^0.14.6",
     "react-addons-perf": "^0.14.7",
     "react-addons-pure-render-mixin": "^0.14.7",
     "react-chatview": "0.0.1-alpha.8",
     "react-css-transition-replace": "^1.1.1",
     "react-dom": "^0.14.6",
-    "react-mounter": "^1.0.0"
+    "react-mounter": "^1.0.0",
+    "style-loader": "^0.13.1",
+    "todomvc-app-css": "^2.0.4"
   }
 }
