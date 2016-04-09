@@ -24,19 +24,74 @@ export default class App extends React.Component {
         },
       ],
       actions: {
-        // footer functions
-        clearCompleted: () => console.log('actions.clearCompleted() called'),
-
-        // task item functions
-        addTask: (text) => console.log(`actions.addTask(text = '${text}') called`),
-        removeTask: (id) => console.log(`actions.removeTask(id = ${id}) called`),
-        toggleTask: (id) => console.log(`actions.toggleTask(id = ${id}) called`),
-        updateTask: (id, text) => console.log(`actions.updateTask(id = ${id}, text = ${text}) called`),
-
-        // task list functions
-        toggleAll: () => console.log('actions.toggleAll() called'),
+        addTask: this.addTask.bind(this),
+        removeTask: this.removeTask.bind(this),
+        toggleTask: this.toggleTask.bind(this),
+        updateTask: this.updateTask.bind(this),
+        toggleAll: this.toggleAll.bind(this),
+        clearCompleted: this.clearCompleted.bind(this),
       }
     };
+  }
+
+  updateState(todos) {
+    this.setState({todos});
+    console.log('Update server with the new list of todos:');
+    console.log(todos);
+  }
+
+  addTask(text) {
+    const {todos} = this.state;
+    const randomNum = Math.random();
+    const newTodo = {
+      id: 'id_' + randomNum,
+      text,
+      completed: false,
+    };
+    const newTodos = todos.concat(newTodo);
+    this.updateState(newTodos);
+  }
+
+  removeTask(id) {
+    const {todos} = this.state;
+    const newTodos = todos.filter(todo => todo.id !== id);
+    this.updateState(newTodos);
+  }
+
+  toggleTask(id) {
+    const {todos} = this.state;
+    const newTodos = todos.map(todo => {
+      if (todo.id === id) {
+        return Object.assign(todo, {completed: !todo.completed});
+      }
+      return todo;
+    });
+    this.updateState(newTodos);
+  }
+
+  updateTask(id, text) {
+    const {todos} = this.state;
+    const newTodos = todos.map(todo => {
+      if (todo.id === id) {
+        return Object.assign(todo, {text});
+      }
+      return todo;
+    });
+    this.updateState(newTodos);
+  }
+
+  clearCompleted() {
+    const {todos} = this.state;
+    const newTodos = todos.filter(todo => !todo.completed);
+    this.updateState(newTodos);
+  }
+
+  toggleAll() {
+    const {todos} = this.state;
+    const isAllChecked = todos.length === todos.filter(todo => todo.completed).length;
+
+    let newTodos = todos.map(todo => Object.assign(todo, {completed: !isAllChecked}));
+    this.updateState(newTodos);
   }
 
   render() {
@@ -44,7 +99,7 @@ export default class App extends React.Component {
       position: 'relative',
       boxSizing: 'border-box',
     };
-    const {todos, filter, actions} = this.state;
+    const {todos, actions} = this.state;
     return (
       <Paper className='todoapp' style={style}>
         <Header addTask={actions.addTask} />

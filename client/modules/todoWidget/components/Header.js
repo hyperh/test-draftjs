@@ -21,7 +21,7 @@ export default class Header extends React.Component {
   handleKeyDown(e) {
     const {addTask} = this.props;
     const input = this._input.value;
-    if (e.keyCode === 13) {
+    if (e.keyCode === 13 && input.trim() !== '') {
       addTask(input.trim());
       this._input.value = '';
     }
