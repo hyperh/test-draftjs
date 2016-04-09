@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import { DragSource } from 'react-dnd';
 
-class Widget extends React.Component {
+class Widget extends Component {
   constructor(props) {
     super(props);
   }
@@ -21,8 +21,8 @@ class Widget extends React.Component {
 }
 Widget.propTypes = {
     // Injected by React DnD from collect function
-  connectDragSource: React.PropTypes.func.isRequired,
-  isDragging: React.PropTypes.bool.isRequired
+  connectDragSource: PropTypes.func.isRequired,
+  isDragging: PropTypes.bool.isRequired
 };
 
 const widgetSource = {

@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { Component } from 'react';
+import { DragDropContext } from 'react-dnd';
+import HTML5Backend from 'react-dnd-html5-backend';
+
 import Login from './Login.jsx';
 import ListItem from './ListItem.jsx';
 import Note from './Note.jsx';
 
-export default class Home extends React.Component {
+class Home extends Component {
   constructor(props) {
     super(props);
   }
@@ -32,3 +35,4 @@ export default class Home extends React.Component {
     );
   }
 }
+export default DragDropContext(HTML5Backend)(Home);

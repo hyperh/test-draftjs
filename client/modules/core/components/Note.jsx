@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { DragDropContext } from 'react-dnd';
-import HTML5Backend from 'react-dnd-html5-backend';
+import { DropTarget } from 'react-dnd';
+
 import Widget from './widgets/Widget.jsx';
 
-class Note extends Component {
+export default class Note extends Component {
   renderWidgets() {
     const {widgets, removeWidget, noteId} = this.props;
     return widgets.map(widget => {
@@ -26,4 +26,3 @@ class Note extends Component {
     );
   }
 }
-export default DragDropContext(HTML5Backend)(Note);
