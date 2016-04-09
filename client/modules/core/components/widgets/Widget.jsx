@@ -16,6 +16,7 @@ const widgetSource = {
 function collectSource(connect, monitor) {
   return {
     connectDragSource: connect.dragSource(),
+    connectDragPreview: connect.dragPreview(),
     isDragging: monitor.isDragging()
   };
 }
@@ -75,12 +76,22 @@ class Widget extends Component {
   }
 
   render() {
-    const { isDragging, connectDragSource, connectDropTarget } = this.props;
+    const { isDragging, connectDragSource, connectDragPreview, connectDropTarget } = this.props;
     const { widget, removeWidget, noteId } = this.props;
     const { type, _id } = widget;
 
-    return connectDragSource(connectDropTarget(
+    const handleStyle = {
+      backgroundColor: 'green',
+      width: '1rem',
+      height: '1rem',
+      display: 'inline-block',
+      marginRight: '0.75rem',
+      cursor: 'move'
+    };
+
+    return connectDropTarget(connectDragPreview(
       <div style={{ opacity: isDragging ? 0.5 : 1 }}>
+        { connectDragSource(<div style={handleStyle} />) }
         type: {type}, widgetId: {_id}
         <span><button onClick={removeWidget.bind(this, noteId, _id)}>Remove</button></span>
       </div>
