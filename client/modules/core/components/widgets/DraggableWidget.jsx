@@ -5,6 +5,33 @@ import _ from 'lodash';
 import { ItemTypes } from '/lib/constants';
 import DragHandle from './DragHandle.jsx';
 
+class DraggableWidget extends Component {
+  render() {
+    const { isDragging, connectDragSource, connectDragPreview, connectDropTarget } = this.props;
+    const { children } = this.props;
+
+    return connectDropTarget(connectDragPreview(
+      <div style={{ opacity: isDragging ? 0 : 1 }}>
+        { connectDragSource(<div><DragHandle /></div>) } {/* div must be there */}
+        { children }
+      </div>
+    ));
+  }
+}
+DraggableWidget.propTypes = {
+  isDragging: PropTypes.bool.isRequired,
+  connectDragSource: PropTypes.func.isRequired,
+  connectDragPreview: PropTypes.func.isRequired,
+  connectDropTarget: PropTypes.func.isRequired,
+  children: PropTypes.node,
+
+  index: PropTypes.number.isRequired,
+  noteId: PropTypes.string.isRequired,
+  widgetId: PropTypes.string.isRequired,
+  moveWidget: PropTypes.func.isRequired
+};
+
+
 const widgetSource = {
   beginDrag(props) {
     return {
@@ -70,32 +97,6 @@ function collectTarget(connect) {
     connectDropTarget: connect.dropTarget()
   };
 }
-
-class DraggableWidget extends Component {
-  render() {
-    const { isDragging, connectDragSource, connectDragPreview, connectDropTarget } = this.props;
-    const { children } = this.props;
-
-    return connectDropTarget(connectDragPreview(
-      <div style={{ opacity: isDragging ? 0 : 1 }}>
-        { connectDragSource(<div><DragHandle /></div>) } {/* div must be there */}
-        { children }
-      </div>
-    ));
-  }
-}
-DraggableWidget.propTypes = {
-  isDragging: PropTypes.bool.isRequired,
-  connectDragSource: PropTypes.func.isRequired,
-  connectDragPreview: PropTypes.func.isRequired,
-  connectDropTarget: PropTypes.func.isRequired,
-  children: PropTypes.node,
-
-  index: PropTypes.number.isRequired,
-  noteId: PropTypes.string.isRequired,
-  widgetId: PropTypes.string.isRequired,
-  moveWidget: PropTypes.func.isRequired
-};
 
 export default _.flow(
   DragSource(ItemTypes.WIDGET, widgetSource, collectSource),
