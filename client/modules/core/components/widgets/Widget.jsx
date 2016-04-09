@@ -6,7 +6,6 @@ import { ItemTypes } from '/lib/constants';
 
 const widgetSource = {
   beginDrag(props) {
-    console.log('beginDrag');
     return {
       widgetId: props.widget._id,
       index: props.index
@@ -23,7 +22,6 @@ function collectSource(connect, monitor) {
 
 const widgetTarget = {
   hover(props, monitor, component) {
-    console.log('hover');
     const { widgetId, index: dragIndex } = monitor.getItem();
     const { index: hoverIndex, moveWidget, noteId } = props;
 
@@ -51,14 +49,17 @@ const widgetTarget = {
     // Dragging upwards
     if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) { return; }
 
-    // Time to actually perform the action
-    moveWidget(noteId, widgetId, hoverIndex);
+    const throttledMove = _.throttle(() => {
+      // Time to actually perform the action
+      moveWidget(noteId, widgetId, hoverIndex);
 
-    // Note: we're mutating the monitor item here!
-    // Generally it's better to avoid mutations,
-    // but it's good here for the sake of performance
-    // to avoid expensive index searches.
-    monitor.getItem().index = hoverIndex;
+      // Note: we're mutating the monitor item here!
+      // Generally it's better to avoid mutations,
+      // but it's good here for the sake of performance
+      // to avoid expensive index searches.
+      monitor.getItem().index = hoverIndex;
+    }, 500);
+    throttledMove();
   }
 };
 
