@@ -1,5 +1,9 @@
+import other from './other';
 import notes from './notes';
+import widgets from './widgets';
 
 export default {
-  notes
+  other,
+  notes,
+  widgets
 };
