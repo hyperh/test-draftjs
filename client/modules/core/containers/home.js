@@ -4,13 +4,13 @@ import R from 'ramda';
 
 const depsMapper = (context, actions) => ({
   context: () => context,
-  create: actions.notes.create,
-  select: actions.notes.select,
-  remove: actions.notes.remove,
-  login: actions.notes.login,
-  addWidget: actions.notes.addWidget,
-  removeWidget: actions.notes.removeWidget,
-  moveWidget: actions.notes.moveWidget
+  createNote: actions.notes.create,
+  selectNote: actions.notes.select,
+  removeNote: actions.notes.remove,
+  login: actions.other.login,
+  addWidget: actions.widgets.add,
+  removeWidget: actions.widgets.remove,
+  moveWidget: actions.widgets.move
 });
 
 export const composer = ({context}, onData) => {

@@ -1,36 +1,21 @@
-import {Meteor} from 'meteor/meteor';
-import {Notes, Locks, Widgets} from '/lib/collections';
+import { Meteor } from 'meteor/meteor';
+import { Notes, Locks, Widgets } from '/lib/collections';
 import R from 'ramda';
-import {check} from 'meteor/check';
+import { check, Match } from 'meteor/check';
 
 export default function () {
   Meteor.methods({
-    create() {
-      const id = Notes.insert({widgetIds: []});
-      return id;
-    }
-  });
-
-  Meteor.methods({
-    remove({noteId}) {
-      check(arguments[0], {
-        noteId: String
-      });
-
-      Notes.remove(noteId);
-    }
-  });
-
-  Meteor.methods({
-    addWidget({noteId, type}) {
+    'widgets.add'({noteId, type, data}) {
       check(arguments[0], {
         noteId: String,
-        type: String
+        type: String,
+        data: Match.Optional(Match.OneOf(undefined, null, Object)),
       });
 
       const widgetId = Widgets.insert({
         type,
-        noteId
+        noteId,
+        data: data ? data : {}
       });
 
       const note = Notes.findOne(noteId);
@@ -42,7 +27,7 @@ export default function () {
   });
 
   Meteor.methods({
-    removeWidget({noteId, widgetId}) {
+    'widgets.remove'({noteId, widgetId}) {
       check(arguments[0], {
         noteId: String,
         widgetId: String
@@ -61,7 +46,7 @@ export default function () {
   });
 
   Meteor.methods({
-    moveWidget({noteId, widgetId, position}) {
+    'widgets.move'({noteId, widgetId, position}) {
       check(arguments[0], {
         noteId: String,
         widgetId: String,
@@ -75,25 +60,6 @@ export default function () {
 
       Notes.update(noteId, {
         $set: { widgetIds: newOrderedWidgets }
-      });
-    }
-  });
-
-  Meteor.methods({
-    '_wipeAndInitialize'() {
-      Locks.remove({});
-      Meteor.users.remove({});
-
-      Accounts.createUser({
-        email: 'alice@test.com',
-        username: 'alice',
-        password: '1'
-      });
-
-      Accounts.createUser({
-        email: 'bob@test.com',
-        username: 'bob',
-        password: '1'
       });
     }
   });

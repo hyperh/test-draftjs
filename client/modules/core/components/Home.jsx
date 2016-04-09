@@ -20,7 +20,8 @@ class Home extends Component {
   render() {
     const {
       noteId,
-      create, select, remove, login,
+      login,
+      createNote, selectNote, removeNote,
       user, notes, widgets,
       removeWidget, moveWidget
     } = this.props;
@@ -43,14 +44,14 @@ class Home extends Component {
           null
         }
 
-        <button onClick={create}>New note</button>
+        <button onClick={createNote}>New note</button>
         <span>
           <button onClick={this.handleAddWidget.bind(this)}>Add widget of type</button>
           <input type="text" ref={ref => this.input = ref }/>
         </span>
 
         {notes.map(note =>
-          <ListItem key={note._id} select={select} remove={remove} noteId={note._id} />
+          <ListItem key={note._id} select={selectNote} remove={removeNote} noteId={note._id} />
         )}
       </div>
     );
