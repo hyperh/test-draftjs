@@ -4,6 +4,8 @@ import { DropTarget } from 'react-dnd';
 
 const rowTarget = {
   drop(props) {
+    const {index, moveWidget} = this.props;
+    moveWidget(noteId, widgetId, index);
   }
 };
 

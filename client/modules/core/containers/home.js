@@ -9,7 +9,8 @@ const depsMapper = (context, actions) => ({
   remove: actions.notes.remove,
   login: actions.notes.login,
   addWidget: actions.notes.addWidget,
-  removeWidget: actions.notes.removeWidget
+  removeWidget: actions.notes.removeWidget,
+  moveWidget: actions.notes.moveWidget
 });
 
 export const composer = ({context}, onData) => {

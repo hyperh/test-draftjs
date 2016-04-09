@@ -13,7 +13,10 @@ class Home extends Component {
 
   render() {
     const {
-      create, select, noteId, remove, login, user, notes, addWidget, widgets, removeWidget
+      noteId,
+      create, select, remove, login,
+      user, notes, widgets,
+      addWidget, removeWidget, moveWidget
     } = this.props;
 
     return (
@@ -23,7 +26,16 @@ class Home extends Component {
         <button onClick={login.bind(null, 'bob', 1)}>Bob</button>
 
         <h1>Note {noteId}</h1>
-        {noteId ? <Note noteId={noteId} widgets={widgets} removeWidget={removeWidget} /> : null}
+        {
+          noteId ?
+          <Note
+            noteId={noteId}
+            widgets={widgets}
+            removeWidget={removeWidget}
+            moveWidget={moveWidget}
+          /> :
+          null
+        }
 
         <button onClick={addWidget.bind(null, noteId)}>Add widget</button>
         <button onClick={create}>New note</button>

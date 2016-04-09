@@ -72,7 +72,7 @@ export default function () {
       const widgetsLessRemoved = R.remove(indexToRemove, 1, note.widgetIds);
       const newOrderedWidgets = R.insert(position, widgetId, widgetsLessRemoved);
 
-      note.update(noteId, {
+      Notes.update(noteId, {
         $set: { widgetIds: newOrderedWidgets }
       });
     }
