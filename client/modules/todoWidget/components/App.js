@@ -61,10 +61,7 @@ export default class App extends React.Component {
   toggleTask(id) {
     const {todos} = this.state;
     const newTodos = todos.map(todo => {
-      if (todo.id === id) {
-        return Object.assign(todo, {completed: !todo.completed});
-      }
-      return todo;
+      return todo.id === id ? Object.assign(todo, {completed: !todo.completed}) : todo;
     });
     this.updateState(newTodos);
   }
@@ -72,10 +69,7 @@ export default class App extends React.Component {
   updateTask(id, text) {
     const {todos} = this.state;
     const newTodos = todos.map(todo => {
-      if (todo.id === id) {
-        return Object.assign(todo, {text});
-      }
-      return todo;
+      return todo.id === id ? Object.assign(todo, {text}) : todo;
     });
     this.updateState(newTodos);
   }
@@ -89,7 +83,6 @@ export default class App extends React.Component {
   toggleAll() {
     const {todos} = this.state;
     const isAllChecked = todos.length === todos.filter(todo => todo.completed).length;
-
     let newTodos = todos.map(todo => Object.assign(todo, {completed: !isAllChecked}));
     this.updateState(newTodos);
   }
