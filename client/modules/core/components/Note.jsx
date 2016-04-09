@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import Widget from './widgets/Widget.jsx';
+import DraggableWidget from './widgets/DraggableWidget.jsx';
 
 export default class Note extends Component {
   renderWidgets() {
@@ -12,14 +13,15 @@ export default class Note extends Component {
 
     return widgets.map((widget, index) => {
       return (
-        <Widget
+        <DraggableWidget
           key={widget._id}
           index={index}
-          widget={widget}
           noteId={noteId}
-          removeWidget={removeWidget}
+          widgetId={widget._id}
           moveWidget={moveWidget}
-        />
+        >
+          <Widget widget={widget} removeWidget={removeWidget} />
+        </DraggableWidget>
       );
     });
   }

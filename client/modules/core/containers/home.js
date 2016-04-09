@@ -4,13 +4,13 @@ import R from 'ramda';
 
 const depsMapper = (context, actions) => ({
   context: () => context,
-  create: actions.notes.create,
-  select: actions.notes.select,
-  remove: actions.notes.remove,
-  login: actions.notes.login,
-  addWidget: actions.notes.addWidget,
-  removeWidget: actions.notes.removeWidget,
-  moveWidget: actions.notes.moveWidget
+  createNote: actions.notes.create,
+  selectNote: actions.notes.select,
+  removeNote: actions.notes.remove,
+  login: actions.other.login,
+  addWidget: actions.widgets.add,
+  removeWidget: actions.widgets.remove,
+  moveWidget: actions.widgets.move
 });
 
 export const composer = ({context}, onData) => {
@@ -26,12 +26,14 @@ export const composer = ({context}, onData) => {
       if (noteId) {
         const note = Collections.Notes.findOne(noteId);
         const widgets = Collections.Widgets.find({noteId}).fetch();
-
         const widgetOrder = note.widgetIds;
 
-        const groupById = R.groupBy(R.prop('_id'), widgets);
-        const sortById = R.map(id => groupById[id][0]);
-        return sortById(widgetOrder);
+        if (!R.isEmpty(widgets)) {
+          const groupById = R.groupBy(R.prop('_id'), widgets);
+          const sortById = R.map(id => groupById[id][0]);
+          return sortById(widgetOrder);
+        }
+        return [];
       }
       return [];
     };
