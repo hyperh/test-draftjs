@@ -24,12 +24,14 @@ export default class App extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.setState({todos: nextProps.todos});
+    if (nextProps.todos) {
+      this.setState({todos: nextProps.todos});
+    }
   }
 
   updateState(todos) {
     this.setState({todos});
-    this.props.updateServer(todos);   // a fucntion passed in by props
+    this.props.updateServer(todos);   // a function passed in by props
   }
 
   addTask(text) {
