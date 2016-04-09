@@ -22,13 +22,14 @@ export default function () {
   });
 
   Meteor.methods({
-    addWidget({noteId}) {
+    addWidget({noteId, type}) {
       check(arguments[0], {
-        noteId: String
+        noteId: String,
+        type: String
       });
 
       const widgetId = Widgets.insert({
-        type: 'test',
+        type,
         noteId
       });
 

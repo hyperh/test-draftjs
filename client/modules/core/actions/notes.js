@@ -35,8 +35,8 @@ export default {
     }
   },
 
-  addWidget({Meteor}, noteId) {
-    Meteor.call('addWidget', {noteId}, err => {
+  addWidget({Meteor}, noteId, type) {
+    Meteor.call('addWidget', {noteId, type}, err => {
       if (err) { alert(err); }
     });
   },

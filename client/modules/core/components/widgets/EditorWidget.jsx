@@ -1,5 +1,4 @@
 import React from 'react';
-import Widget from './Widget.jsx';
 import {Editor, EditorState} from 'draft-js';
 
 export default class EditorWidget extends React.Component {
@@ -13,12 +12,12 @@ export default class EditorWidget extends React.Component {
 
   render() {
     return (
-      <Widget>
+      <div>
         <Editor
           editorState={this.state.editorState}
           onChange={this.onChange}
         />
-      </Widget>
+      </div>
     );
   }
 }

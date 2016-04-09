@@ -11,12 +11,18 @@ class Home extends Component {
     super(props);
   }
 
+  handleAddWidget() {
+    const { addWidget, noteId } = this.props;
+    const type = this.input.value;
+    addWidget(noteId, type);
+  }
+
   render() {
     const {
       noteId,
       create, select, remove, login,
       user, notes, widgets,
-      addWidget, removeWidget, moveWidget
+      removeWidget, moveWidget
     } = this.props;
 
     return (
@@ -37,8 +43,11 @@ class Home extends Component {
           null
         }
 
-        <button onClick={addWidget.bind(null, noteId)}>Add widget</button>
         <button onClick={create}>New note</button>
+        <span>
+          <button onClick={this.handleAddWidget.bind(this)}>Add widget of type</button>
+          <input type="text" ref={ref => this.input = ref }/>
+        </span>
 
         {notes.map(note =>
           <ListItem key={note._id} select={select} remove={remove} noteId={note._id} />
