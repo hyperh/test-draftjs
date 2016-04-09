@@ -11,18 +11,7 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      todos: [
-        {
-          id: 'id_one',
-          text: 'Make cool website',
-          completed: true,
-        },
-        {
-          id: 'id_two',
-          text: 'Buy awesome widgets',
-          completed: false,
-        },
-      ],
+      todos: [],
       actions: {
         addTask: this.addTask.bind(this),
         removeTask: this.removeTask.bind(this),
@@ -34,10 +23,13 @@ export default class App extends React.Component {
     };
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({todos: nextProps.todos});
+  }
+
   updateState(todos) {
     this.setState({todos});
-    console.log('Update server with the new list of todos:');
-    console.log(todos);
+    this.props.updateServer(todos);   // a fucntion passed in by props
   }
 
   addTask(text) {
