@@ -15,6 +15,7 @@ export default class Home extends React.Component {
     return widgets.map(widget => {
       return (
         <Widget
+          key={widget._id}
           widget={widget}
           noteId={noteId}
           removeWidget={removeWidget}
@@ -45,7 +46,7 @@ export default class Home extends React.Component {
         <button onClick={create}>New note</button>
 
         {notes.map(note =>
-          <ListItem select={select} remove={remove} noteId={note._id} />
+          <ListItem key={note._id} select={select} remove={remove} noteId={note._id} />
         )}
       </div>
     );

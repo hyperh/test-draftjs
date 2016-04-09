@@ -1,5 +1,6 @@
 import {useDeps, composeWithTracker, composeAll} from 'mantra-core';
 import Home from '../components/Home.jsx';
+import R from 'ramda';
 
 const depsMapper = (context, actions) => ({
   context: () => context,
@@ -19,13 +20,27 @@ export const composer = ({context}, onData) => {
     const noteId = LocalState.get('noteId');
     const user = LocalState.get('fakeUser');
     const notes = Collections.Notes.find({}).fetch();
-    const widgets = Collections.Widgets.find({noteId}).fetch();
+
+    const getWidgets = () => {
+      if (noteId) {
+        const note = Collections.Notes.findOne(noteId);
+        const widgets = Collections.Widgets.find({noteId}).fetch();
+
+        const widgetOrder = note.widgetIds;
+
+        const groupById = R.groupBy(R.prop('_id'), widgets);
+        const sortById = R.map(id => groupById[id][0]);
+        return sortById(widgetOrder);
+      }
+      return [];
+    };
+
 
     onData(null, {
       noteId,
       user,
       notes,
-      widgets
+      widgets: getWidgets()
     });
   }
 };
