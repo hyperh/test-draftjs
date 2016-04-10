@@ -12,8 +12,8 @@ export default class OptionItem extends React.Component {
       hovered: false,
       editing: false,
     };
-    this.handleMouseEnter = () => this.setState({hovered: true});
-    this.handleMouseLeave = () => this.setState({hovered: false});
+    this.handleMouseOver = () => this.setState({hovered: true});
+    this.handleMouseOut = () => this.setState({hovered: false});
     this.startEditing = () => this.setState({editing: true});
     this.stopEditing = () => this.setState({editing: false});
   }
@@ -63,8 +63,8 @@ export default class OptionItem extends React.Component {
     return (
       <div
         style={styles.container}
-        onMouseEnter={this.handleMouseEnter}
-        onMouseLeave={this.handleMouseLeave}
+        onMouseEnter={this.handleMouseOver}
+        onMouseLeave={this.handleMouseOut}
       >
         <div style={barStyle} />
         { this.state.editing ? this.renderEditing() : renderLabel() }
