@@ -29,7 +29,11 @@ export default class TodoEditInput extends React.Component {
     const {updateTask, cancelEditing} = this.props;
 
     const input = this._input.value;
-    if (e.keyCode === 13) {
+    if (e.keyCode === 27) { // esc
+      cancelEditing();
+      return;
+    }
+    if (e.keyCode === 13) { // enter
       updateTask(id, input.trim());
       cancelEditing();
     }
