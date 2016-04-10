@@ -18,6 +18,7 @@ export default class EditorWidget extends React.Component {
 
     this.onChange = this.onChange.bind(this);
 
+    this.focus = () => this.refs.editor.focus();
     this.handleKeyCommand = (command) => this._handleKeyCommand(command);
     this.toggleBlockType = (type) => this._toggleBlockType(type);
     this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
@@ -99,17 +100,19 @@ export default class EditorWidget extends React.Component {
           onToggle={this.toggleInlineStyle}
         />
 
-        <Editor
-          editorState={this.state.editorState}
-          onChange={this.onChange}
-          placeholder={'Type something...'}
+        <div className={className} onClick={this.focus}>
+          <Editor
+            editorState={this.state.editorState}
+            onChange={this.onChange}
+            placeholder={'Type something...'}
 
-          blockStyleFn={getBlockStyle}
-          customStyleMap={styleMap}
-          handleKeyCommand={this.handleKeyCommand}
-          ref="editor"
-          spellCheck={true}
-        />
+            blockStyleFn={getBlockStyle}
+            customStyleMap={styleMap}
+            handleKeyCommand={this.handleKeyCommand}
+            ref="editor"
+            spellCheck={true}
+          />
+        </div>
       </div>
     );
   }

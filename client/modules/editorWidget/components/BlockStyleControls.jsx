@@ -16,19 +16,19 @@ const BLOCK_TYPES = [
 
 export default (props) => {
   const {editorState} = props;
+
   const selection = editorState.getSelection();
-  // const blockType = editorState
-  //   .getCurrentContent()
-  //   .getBlockForKey(selection.getStartKey())
-  //   .getType();
+  const block = editorState
+    .getCurrentContent()
+    .getBlockForKey(selection.getStartKey());
+  const blockType = block ? block.getType() : null;
 
   return (
     <div className="RichEditor-controls">
       {BLOCK_TYPES.map((type) =>
         <StyleButton
           key={type.label}
-          // active={type.style === blockType}
-          action={false}
+          active={blockType ? type.style === blockType : false}
           label={type.label}
           onToggle={props.onToggle}
           style={type.style}
