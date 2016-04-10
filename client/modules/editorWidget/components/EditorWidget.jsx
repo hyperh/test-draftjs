@@ -2,6 +2,10 @@ import React from 'react';
 import R from 'ramda';
 import { Editor, EditorState, ContentState } from 'draft-js';
 import { convertToRaw, convertFromRaw } from 'draft-js';
+import { RichUtils } from 'draft-js';
+
+import BlockStyleControls from './BlockStyleControls.jsx';
+import InlineStyleControls from './InlineStyleControls.jsx';
 
 export default class EditorWidget extends React.Component {
   constructor(props) {
@@ -13,6 +17,10 @@ export default class EditorWidget extends React.Component {
     };
 
     this.onChange = this.onChange.bind(this);
+
+    this.handleKeyCommand = (command) => this._handleKeyCommand(command);
+    this.toggleBlockType = (type) => this._toggleBlockType(type);
+    this.toggleInlineStyle = (style) => this._toggleInlineStyle(style);
   }
 
   onChange(editorState) {
@@ -26,6 +34,34 @@ export default class EditorWidget extends React.Component {
 
     update(widget._id, raw);
     this.setState({editorState});
+  }
+
+  _handleKeyCommand(command) {
+    const {editorState} = this.state;
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      this.onChange(newState);
+      return true;
+    }
+    return false;
+  }
+
+  _toggleBlockType(blockType) {
+    this.onChange(
+      RichUtils.toggleBlockType(
+        this.state.editorState,
+        blockType
+      )
+    );
+  }
+
+  _toggleInlineStyle(inlineStyle) {
+    this.onChange(
+      RichUtils.toggleInlineStyle(
+        this.state.editorState,
+        inlineStyle
+      )
+    );
   }
 
   _injectChanges(editorState, raw) {
@@ -42,15 +78,57 @@ export default class EditorWidget extends React.Component {
   }
 
   render() {
+    // If the user changes block type before entering any text, we can
+    // either style the placeholder or hide it. Let's just hide it now.
+    let className = 'RichEditor-editor';
+    var contentState = this.state.editorState.getCurrentContent();
+    if (!contentState.hasText()) {
+      if (contentState.getBlockMap().first().getType() !== 'unstyled') {
+        className += ' RichEditor-hidePlaceholder';
+      }
+    }
+
     return (
       <div>
+        <BlockStyleControls
+          editorState={this.state.editorState}
+          onToggle={this.toggleBlockType}
+        />
+        <InlineStyleControls
+          editorState={this.state.editorState}
+          onToggle={this.toggleInlineStyle}
+        />
+
         <Editor
           editorState={this.state.editorState}
           onChange={this.onChange}
           placeholder={'Type something...'}
+
+          blockStyleFn={getBlockStyle}
+          customStyleMap={styleMap}
+          handleKeyCommand={this.handleKeyCommand}
+          ref="editor"
+          spellCheck={true}
         />
       </div>
     );
+  }
+}
+
+// Custom overrides for "code" style.
+const styleMap = {
+  CODE: {
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    fontFamily: '"Inconsolata", "Menlo", "Consolas", monospace',
+    fontSize: 16,
+    padding: 2,
+  },
+};
+
+function getBlockStyle(block) {
+  switch (block.getType()) {
+    case 'blockquote': return 'RichEditor-blockquote';
+    default: return null;
   }
 }
 
