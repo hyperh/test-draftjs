@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import DraftPasteProcessor from 'draft-js/lib/DraftPasteProcessor';
 import { ContentState, ContentBlock, convertToRaw } from 'draft-js';
 import { Random } from 'meteor/random';
 
