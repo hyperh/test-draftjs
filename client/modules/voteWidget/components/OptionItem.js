@@ -1,7 +1,10 @@
 import React from 'react';
 
+import IconButton from 'material-ui/lib/icon-button';
+import VoteIcon from 'material-ui/lib/svg-icons/action/thumb-up';
+import RemoveIcon from 'material-ui/lib/svg-icons/navigation/close';
+
 import OptionEditInput from './OptionEditInput';
-import OptionItemButtons from './OptionItemButtons';
 
 import {getPercentage} from '../utils/voting';
 
@@ -18,15 +21,45 @@ export default class OptionItem extends React.Component {
     this.stopEditing = () => this.setState({editing: false});
   }
 
-  renderBtns() {
-    const {user, option, voted, actions} = this.props;
+  handleCancelVote() {
+    const {user, option, actions} = this.props;
+    actions.cancelVote(user, option.id);
+  }
+
+  handleCreateVote() {
+    const {user, option, actions} = this.props;
+    actions.createVote(user, option.id);
+  }
+
+  handleRemoveOption() {
+    const {option, actions} = this.props;
+    actions.removeOption(option.id);
+  }
+
+  renderVoteBtn() {
+    const {voted} = this.props;
+    const styles = getButtonStyles();
+    const {base, accent} = styles.iconColors;
     return (
-      <OptionItemButtons
-        user={user}
-        option={option}
-        voted={voted}
-        actions={actions}
-      />
+      <IconButton
+        onClick={voted ? this.handleCancelVote.bind(this) : this.handleCreateVote.bind(this)}
+        style={styles.voteButton}
+      >
+        <VoteIcon color={voted ? accent : base }/>
+      </IconButton>
+    );
+  }
+
+  renderRemoveBtn() {
+    const styles = getButtonStyles();
+    const {base} = styles.iconColors;
+    return (
+      <IconButton
+        onClick={this.handleRemoveOption.bind(this)}
+        style={styles.removeButton}
+      >
+        <RemoveIcon color={base}/>
+      </IconButton>
     );
   }
 
@@ -67,8 +100,9 @@ export default class OptionItem extends React.Component {
         onMouseLeave={this.handleMouseOut}
       >
         <div style={barStyle} />
+        { this.renderVoteBtn() }
         { this.state.editing ? this.renderEditing() : renderLabel() }
-        { this.state.hovered ? this.renderBtns() : renderNumbers() }
+        { this.state.hovered ? this.renderRemoveBtn() : renderNumbers() }
       </div>
     );
   }
@@ -80,11 +114,11 @@ function getStyles() {
       position: 'relative',
       width: '100%',
       display: 'flex',
-      justifyContent: 'space-between',
       borderBottom: '1px solid #ededed',
       boxSizing: 'border-box',
       padding: '15px',
       fontSize: '16px',
+
     },
     label: {
       zIndex: '2',
@@ -94,6 +128,7 @@ function getStyles() {
       display: 'flex',
       zIndex: '2',
       color: '#999',
+      marginLeft: 'auto',
     },
     bar: {
       position: 'absolute',
@@ -103,8 +138,23 @@ function getStyles() {
       top: '0',
       left: '0',
       bottom: '0',
-      zIndex: '1',
+      zIndex: '0',
       transition: 'all 1s',
+    },
+  };
+}
+
+function getButtonStyles() {
+  return {
+    voteButton: {
+      margin: '-14px 0px -15px -15px',
+    },
+    removeButton: {
+      margin: '-14px -15px -15px auto',
+    },
+    iconColors: {
+      base: '#999',
+      accent: '#ff4081',
     },
   };
 }

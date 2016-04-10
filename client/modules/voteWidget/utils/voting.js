@@ -30,6 +30,7 @@ export function sortOptions(options) {
 
 // Returns a string value of the proportion of votes (eg. '33%')
 export function getPercentage(votes, total) {
+  if (!total) {return '0%';}
   const unRounded = 100 * (votes / total);
   return `${Math.round(unRounded)}%`;
 }

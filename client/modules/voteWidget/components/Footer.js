@@ -16,10 +16,11 @@ export default class Footer extends React.Component {
     const {user, options} = this.props;
     const styles = getStyles();
     const totalVotes = getTotalVotes(options);
+    const desc = totalVotes === 1 ? ' vote' : ' votes';
     return (
       <div style={styles.footer}>
         {this.renderVotingStatus(user, options)}
-        <div><strong>{totalVotes}</strong> votes</div>
+        <div><strong>{totalVotes}</strong>{desc}</div>
       </div>
     );
   }
