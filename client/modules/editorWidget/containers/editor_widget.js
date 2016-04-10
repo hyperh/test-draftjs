@@ -1,5 +1,5 @@
 import {useDeps, composeAll} from 'mantra-core';
-import EditorWidget from '../components/widgets/EditorWidget.jsx';
+import EditorWidget from '../components/EditorWidget.jsx';
 
 const depsMapper = (context, actions) => ({
   context: () => context,

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
-import Widget from './widgets/Widget.jsx';
-import DraggableWidget from './widgets/DraggableWidget.jsx';
+import Widgets from './widgets';
 
 export default class Note extends Component {
   renderWidgets() {
@@ -10,6 +9,9 @@ export default class Note extends Component {
       widgets,
       removeWidget, moveWidget
     } = this.props;
+
+    const DraggableWidget = Widgets['draggable'];
+    const Widget = Widgets['widget'];
 
     return widgets.map((widget, index) => {
       return (

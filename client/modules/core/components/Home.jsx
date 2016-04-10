@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
-import DraftPasteProcessor from 'draft-js/lib/DraftPasteProcessor';
-import { ContentState, convertToRaw } from 'draft-js';
+import { ContentState, ContentBlock, convertToRaw } from 'draft-js';
+import { Random } from 'meteor/random';
 
 import Login from './Login.jsx';
 import ListItem from './ListItem.jsx';
@@ -24,34 +24,62 @@ class Home extends Component {
     const type = 'editor';
 
     const date = new Date();
-    const blockArray = DraftPasteProcessor.processHTML(
-      `
-        <h1>Meeting Minutes</h1>
+    const indexes = [ 1, 2, 3 ];
+    const keyLength = 5;
 
-        <h2>Date: ${date.toUTCString()}</h2>
+    const header = new ContentBlock({
+      text: 'Meeting Minutes',
+      type: 'header-one',
+      key: Random.id(keyLength)
+    });
+    const dateHeader = new ContentBlock({
+      text: `Date: ${date.toUTCString()}`,
+      type: 'header-three',
+    });
+    const participantsHeader = new ContentBlock({
+      text: 'Participants',
+      type: 'header-two',
+      key: Random.id(keyLength)
+    });
+    const participants = indexes.map(index => {
+      return new ContentBlock({
+        text: `Participant ${index}`,
+        type: 'unordered-list-item',
+        key: Random.id(keyLength)
+      });
+    });
+    const notesHeader = new ContentBlock({
+      text: 'Notes',
+      type: 'header-two',
+      key: Random.id(keyLength)
+    });
+    const notes = indexes.map(index => {
+      return new ContentBlock({
+        text: `Note ${index}`,
+        type: 'unordered-list-item',
+        key: Random.id(keyLength)
+      });
+    });
+    const actionsHeader = new ContentBlock({
+      text: 'Actions',
+      type: 'header-two',
+      key: Random.id(keyLength)
+    });
+    const actions = indexes.map(index => {
+      return new ContentBlock({
+        text: `Action ${index}`,
+        type: 'unordered-list-item',
+        key: Random.id(keyLength)
+      });
+    });
 
-        <h3>Participants</h3>
-        <ul>
-          <li>Person 1</li>
-          <li>Person 2</li>
-          <li>Person 3</li>
-        </ul>
+    const blockArray = [
+      header, dateHeader,
+      participantsHeader, ...participants,
+      notesHeader, ...notes,
+      actionsHeader, ...actions
+    ];
 
-        <h3>Notes</h3>
-        <ul>
-          <li>Note 1</li>
-          <li>Note 2</li>
-          <li>Note 3</li>
-        </ul>
-
-        <h3>Actions</h3>
-        <ul>
-          <li>Action 1</li>
-          <li>Action 2</li>
-          <li>Action 3</li>
-        </ul>
-      `
-    );
     const contentState = ContentState.createFromBlockArray(blockArray);
     const raw = convertToRaw(contentState);
     addWidget(noteId, type, raw);
@@ -86,8 +114,8 @@ class Home extends Component {
 
         <button onClick={createNote}>New note</button>
         <span>
-          <button onClick={this.handleAddWidget.bind(this)}>Add widget of type</button>
           <button onClick={this.addMeetingMinutes.bind(this)}>Meeting minutes</button>
+          <button onClick={this.handleAddWidget.bind(this)}>Add widget of type</button>
           <input type="text" ref={ref => this.input = ref }/>
         </span>
 
