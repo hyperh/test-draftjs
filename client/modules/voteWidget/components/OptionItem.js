@@ -133,8 +133,8 @@ function getStyles() {
     bar: {
       position: 'absolute',
       height: '100%',
-      // backgroundColor: '#46CFE0',
-      backgroundColor: 'rgba(70, 207, 224, 0.2)',
+      backgroundColor: 'rgba(70, 207, 224, 0.5)',
+      opacity: '0.2',
       top: '0',
       left: '0',
       bottom: '0',
