@@ -114,8 +114,8 @@ class Home extends Component {
 
         <button onClick={createNote}>New note</button>
         <span>
-          <button onClick={this.handleAddWidget.bind(this)}>Add widget of type</button>
           <button onClick={this.addMeetingMinutes.bind(this)}>Meeting minutes</button>
+          <button onClick={this.handleAddWidget.bind(this)}>Add widget of type</button>
           <input type="text" ref={ref => this.input = ref }/>
         </span>
 
