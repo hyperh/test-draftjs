@@ -21,8 +21,6 @@ class Home extends Component {
 
   addMeetingMinutes() {
     const { addWidget, noteId } = this.props;
-    const type = 'editor';
-
     const date = new Date();
     const indexes = [ 1, 2, 3 ];
     const keyLength = 5;
@@ -82,7 +80,7 @@ class Home extends Component {
 
     const contentState = ContentState.createFromBlockArray(blockArray);
     const raw = convertToRaw(contentState);
-    addWidget(noteId, type, raw);
+    addWidget(noteId, 'editor', raw);
   }
 
   render() {
