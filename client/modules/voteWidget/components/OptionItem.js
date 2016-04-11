@@ -100,7 +100,7 @@ export default class OptionItem extends React.Component {
         onMouseLeave={this.handleMouseOut}
       >
         <div style={barStyle} />
-        { this.renderVoteBtn() }
+        { !this.state.editing ? this.renderVoteBtn() : null }
         { this.state.editing ? this.renderEditing() : renderLabel() }
         { this.state.hovered ? this.renderRemoveBtn() : renderNumbers() }
       </div>
