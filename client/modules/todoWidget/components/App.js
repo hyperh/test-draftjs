@@ -52,6 +52,7 @@ export default class App extends React.Component {
     const style = {
       position: 'relative',
       boxSizing: 'border-box',
+      width: '100%',
     };
     const {todos} = this.state;
     const actions = this.getActions();

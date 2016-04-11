@@ -60,6 +60,7 @@ export default class App extends React.Component {
     const style = {
       position: 'relative',
       boxSizing: 'border-box',
+      width: '100%',
     };
     const {prompt, options} = this.state;
     const actions = this.getActions();

@@ -12,6 +12,7 @@ class DraggableWidget extends Component {
     const containerStyle = {
       opacity: isDragging ? 0 : 1,
       display: 'flex',
+      padding: '12px 12px 12px 0',
     };
 
     return connectDropTarget(connectDragPreview(

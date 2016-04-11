@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Widgets from '/client/modules/core/components/widgets';
+import RemoveIcon from 'material-ui/lib/svg-icons/navigation/close';
 
 export default class Widget extends Component {
   render() {
@@ -8,12 +9,35 @@ export default class Widget extends Component {
 
     const WidgetType = Widgets[type];
     return (
-      <span>
+      <div style={{position: 'relative', display: 'flex'}}>
         <WidgetType widget={widget} update={update} />
-        <span>
-          <button onClick={removeWidget.bind(this, noteId, widgetId)}>Remove</button>
-        </span>
-      </span>
+        <div style={getRemoveStyle().container} onClick={removeWidget.bind(this, noteId, widgetId)}>
+          <RemoveIcon style={getRemoveStyle().icon} color='rgba(0,0,0,0.5)'/>
+        </div>
+      </div>
     );
   }
+}
+
+function getRemoveStyle() {
+  return {
+    container: {
+      position: 'absolute',
+      top: '-12px',
+      right: '-12px',
+      backgroundColor: '#EEE',
+      width: '24px',
+      height: '24px',
+      borderRadius: '50%',
+      cursor: 'pointer',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      boxShadow: '0 1px 6px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.12)',
+    },
+    icon: {
+      width: '16px',
+      height: '16px',
+    },
+  };
 }
