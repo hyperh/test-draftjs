@@ -15,11 +15,15 @@ import {updatePrompt, createOption, updateOptionLabel,
 export default class App extends React.Component {
   constructor(props) {
     super(props);
+    const {widget} = this.props;
+
     this.defaultState = {
       prompt: 'Type your question here',
       options: [],
     };
-    this.state = this.defaultState;
+    this.state = canSetStateFromProps(widget) ?
+      {prompt: widget.data.prompt, options: widget.data.options} :
+      this.defaultState;
   }
 
   getActions() {
@@ -34,8 +38,10 @@ export default class App extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.data) {
-      const {prompt, options} = nextProps.data;
+    const {widget} = nextProps;
+
+    if (canSetStateFromProps(widget)) {
+      const {prompt, options} = widget.data;
       this.setState({prompt, options});
       return;
     }
@@ -43,9 +49,11 @@ export default class App extends React.Component {
   }
 
   updateState(prompt, options) {
+    const {widget, update} = this.props;
+
     this.setState({prompt, options});
     const data = {prompt, options};
-    // this.props.updateServer(data);   // a function passed in by props
+    update(widget._id, data);
   }
 
   render() {
@@ -64,4 +72,13 @@ export default class App extends React.Component {
       </Paper>
     );
   }
+}
+
+function canSetStateFromProps(widget) {
+  const {data} = widget;
+  const hasData = widget && data;
+  const hasPrompt = hasData && data.prompt;
+  const hasOptions = hasData && data.options;
+
+  return hasPrompt && hasOptions;
 }
