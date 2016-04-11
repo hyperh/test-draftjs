@@ -90,17 +90,31 @@ export default class EditorWidget extends React.Component {
       }
     }
 
+    const controlsContainerStyle = {
+      display: 'flex',
+      alignItems: 'center',
+    };
+
+    const separatorStyle = {
+      width: '1px',
+      height: '24px',
+      backgroundColor: 'rgba(0,0,0,0.2)',
+      marginRight: '16px',
+    };
+
     return (
       <Paper style={{padding: '12px', width: '100%'}}>
-        <BlockStyleControls
-          editorState={this.state.editorState}
-          onToggle={this.toggleBlockType}
-        />
-        <InlineStyleControls
-          editorState={this.state.editorState}
-          onToggle={this.toggleInlineStyle}
-        />
-
+        <div style={controlsContainerStyle}>
+          <InlineStyleControls
+            editorState={this.state.editorState}
+            onToggle={this.toggleInlineStyle}
+          />
+          <div style={separatorStyle} />
+          <BlockStyleControls
+            editorState={this.state.editorState}
+            onToggle={this.toggleBlockType}
+          />
+        </div>
         <div className={className} onClick={this.focus}>
           <Editor
             editorState={this.state.editorState}

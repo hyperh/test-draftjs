@@ -13,10 +13,10 @@ const BLOCK_TYPES = [
   // {label: 'H4', style: 'header-four'},
   // {label: 'H5', style: 'header-five'},
   // {label: 'H6', style: 'header-six'},
-  {label: 'Blockquote', style: 'blockquote'},
-  {label: 'UL', style: 'unordered-list-item'},
-  {label: 'OL', style: 'ordered-list-item'},
-  {label: 'Code Block', style: 'code-block'},
+  {icon: BulletListIcon, label: 'UL', style: 'unordered-list-item'},
+  {icon: NumberedListIcon, label: 'OL', style: 'ordered-list-item'},
+  {icon: QuoteIcon, label: 'Blockquote', style: 'blockquote'},
+  {icon: CodeIcon, label: 'Code Block', style: 'code-block'},
 ];
 
 export default (props) => {
@@ -29,7 +29,7 @@ export default (props) => {
   const blockType = block ? block.getType() : null;
 
   return (
-    <div className="RichEditor-controls">
+    <span className="RichEditor-controls">
       {BLOCK_TYPES.map((type) =>
         <StyleButton
           key={type.label}
@@ -37,8 +37,9 @@ export default (props) => {
           label={type.label}
           onToggle={props.onToggle}
           style={type.style}
+          icon={type.icon}
         />
       )}
-    </div>
+    </span>
   );
 };

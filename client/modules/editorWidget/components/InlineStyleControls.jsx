@@ -1,12 +1,15 @@
 import React from 'react';
 import StyleButton from './StyleButton.jsx';
-import RemoveIcon from 'material-ui/lib/svg-icons/navigation/close';
+
+import BoldIcon from 'material-ui/lib/svg-icons/editor/format-bold';
+import ItalicIcon from 'material-ui/lib/svg-icons/editor/format-italic';
+import UnderlineIcon from 'material-ui/lib/svg-icons/editor/format-underlined';
 
 const INLINE_STYLES = [
-  {label: 'Bold', style: 'BOLD'},
-  {label: 'Italic', style: 'ITALIC'},
-  {label: 'Underline', style: 'UNDERLINE'},
-  {label: 'Monospace', style: 'CODE'},
+  {icon: BoldIcon, label: 'Bold', style: 'BOLD'},
+  {icon: ItalicIcon, label: 'Italic', style: 'ITALIC'},
+  {icon: UnderlineIcon, label: 'Underline', style: 'UNDERLINE'},
+  // {icon: Icon, label: 'Monospace', style: 'CODE'},
 ];
 
 export default (props) => {
@@ -20,7 +23,7 @@ export default (props) => {
   const currentStyle = block ? props.editorState.getCurrentInlineStyle() : null;
 
   return (
-    <div className="RichEditor-controls">
+    <span className="RichEditor-controls">
       {INLINE_STYLES.map(type =>
         <StyleButton
           key={type.label}
@@ -28,8 +31,9 @@ export default (props) => {
           label={type.label}
           onToggle={props.onToggle}
           style={type.style}
+          icon={type.icon}
         />
       )}
-    </div>
+    </span>
   );
 };
