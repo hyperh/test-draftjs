@@ -4,8 +4,8 @@ import Paper from 'material-ui/lib/paper';
 
 import Header from './Header';
 import Body from './Body';
-import './app.css';
-import './placeholder.css';
+// import './app.css';
+// import './placeholder.css';
 
 import {addTask, removeTask, toggleTask,
   updateTask, toggleAll, clearCompleted} from '../actions/actions';

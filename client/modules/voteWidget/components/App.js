@@ -2,8 +2,8 @@ import React from 'react';
 
 import Paper from 'material-ui/lib/paper';
 
-import './app.css';
-import './placeholder.css';
+// import './app.css';
+// import './placeholder.css';
 
 import Header from './Header';
 import Body from './Body';
