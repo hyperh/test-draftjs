@@ -18,7 +18,7 @@ class DraggableWidget extends Component {
     return connectDropTarget(connectDragPreview(
       <div style={containerStyle}>
         { connectDragSource(<div><DragHandle /></div>) } {/* div must be there */}
-        <div style={{flexGrow: '1'}}>{ children }</div>
+        <div style={{flexGrow: '1', maxWidth: 'calc(100% - 22px)'}}>{ children }</div>
       </div>
     ));
   }
