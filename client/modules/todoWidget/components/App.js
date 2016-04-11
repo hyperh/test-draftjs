@@ -1,4 +1,5 @@
 import React from 'react';
+import R from 'ramda';
 
 import Paper from 'material-ui/lib/paper';
 
@@ -13,7 +14,13 @@ import {addTask, removeTask, toggleTask,
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {todos: []};
+
+    const {widget} = props;
+    this.state = {
+      todos: canSetStateFromProps(widget) ?
+        widget.data.todos :
+        []
+    };
   }
 
   getActions() {
@@ -28,14 +35,17 @@ export default class App extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.widget) {
-      this.setState({todos: nextProps.widget.todos});
+    const {widget} = nextProps;
+    if (canSetStateFromProps(widget)) {
+      this.setState({todos: widget.data.todos});
     }
   }
 
   updateState(todos) {
+    const {widget, update} = this.props;
+
     this.setState({todos});
-    // this.props.updateServer(todos);   // a function passed in by props
+    update(widget._id, {todos});
   }
 
   render() {
@@ -52,4 +62,10 @@ export default class App extends React.Component {
       </Paper>
     );
   }
+}
+
+function canSetStateFromProps(widget) {
+  const hasData = widget && widget.data;
+  const hasTodos = hasData && !R.isEmpty(widget.data.todos);
+  return hasTodos;
 }
