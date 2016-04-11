@@ -15,10 +15,10 @@ export default class App extends React.Component {
   constructor(props) {
     super(props);
 
-    const {widget} = props;
+    const {data} = props;
     this.state = {
-      todos: canSetStateFromProps(widget) ?
-        widget.data.todos :
+      todos: canSetStateFromProps(data) ?
+        data.todos :
         []
     };
   }
@@ -35,17 +35,17 @@ export default class App extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {widget} = nextProps;
-    if (canSetStateFromProps(widget)) {
-      this.setState({todos: widget.data.todos});
+    const {data} = nextProps;
+    if (canSetStateFromProps(data)) {
+      this.setState({todos: data.todos});
     }
   }
 
   updateState(todos) {
-    const {widget, update} = this.props;
+    const {widgetId, update} = this.props;
 
     this.setState({todos});
-    update(widget._id, {todos});
+    update(widgetId, {todos});
   }
 
   render() {
@@ -64,8 +64,8 @@ export default class App extends React.Component {
   }
 }
 
-function canSetStateFromProps(widget) {
-  const hasData = widget && widget.data;
-  const hasTodos = hasData && !R.isEmpty(widget.data.todos);
+function canSetStateFromProps(data) {
+  const hasData = data;
+  const hasTodos = hasData && !R.isEmpty(data.todos);
   return hasTodos;
 }
