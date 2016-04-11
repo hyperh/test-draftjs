@@ -3,7 +3,7 @@
  */
 
 .public-DraftEditorPlaceholder-root {
-  color: var(fbui-desktop-text-placeholder);
+  color: #9197a3;
   position: absolute;
   z-index: 0;
 }
