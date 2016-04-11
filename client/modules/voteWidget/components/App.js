@@ -75,10 +75,9 @@ export default class App extends React.Component {
 }
 
 function canSetStateFromProps(widget) {
-  const {data} = widget;
-  const hasData = widget && data;
-  const hasPrompt = hasData && data.prompt;
-  const hasOptions = hasData && data.options;
+  const hasData = widget && widget.data;
+  const hasPrompt = hasData && widget.data.prompt;
+  const hasOptions = hasData && widget.data.options;
 
   return hasPrompt && hasOptions;
 }
