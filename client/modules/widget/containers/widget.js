@@ -1,5 +1,5 @@
 import {useDeps, composeAll} from 'mantra-core';
-import EditorWidget from '../components/EditorWidget.jsx';
+import Widget from '../components/Widget.jsx';
 
 const depsMapper = (context, actions) => ({
   context: () => context,
@@ -8,4 +8,4 @@ const depsMapper = (context, actions) => ({
 
 export default composeAll(
   useDeps(depsMapper)
-)(EditorWidget);
+)(Widget);

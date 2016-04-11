@@ -28,8 +28,8 @@ export default class App extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.todos) {
-      this.setState({todos: nextProps.todos});
+    if (nextProps.widget) {
+      this.setState({todos: nextProps.widget.todos});
     }
   }
 
