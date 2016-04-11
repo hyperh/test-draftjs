@@ -24,7 +24,7 @@ storiesOf('Todo App', module)
         completed: false,
       },
     ];
-    return <App todos={todos} />;
+    return <App data={{todos}} />;
   })
   .add('all selected', () => {
     const todos = [
@@ -44,7 +44,7 @@ storiesOf('Todo App', module)
         completed: true,
       },
     ];
-    return <App todos={todos} />;
+    return <App data={{todos}} />;
   })
   .add('none selected', () => {
     const todos = [
@@ -64,5 +64,5 @@ storiesOf('Todo App', module)
         completed: false,
       },
     ];
-    return <App todos={todos} />;
-  })
+    return <App data={{todos}} />;
+  });
