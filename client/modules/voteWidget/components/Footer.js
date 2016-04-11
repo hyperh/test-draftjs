@@ -31,7 +31,6 @@ function getStyles() {
     footer: {
       color: '#777',
       padding: '10px 15px',
-      height: '20px',
       textAlign: 'center',
       borderTop: '1px solid #e6e6e6',
       display: 'flex',
