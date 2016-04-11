@@ -1,6 +1,10 @@
 import React from 'react';
 import StyleButton from './StyleButton.jsx';
+
+import QuoteIcon from 'material-ui/lib/svg-icons/editor/format-quote';
 import BulletListIcon from 'material-ui/lib/svg-icons/editor/format-list-bulleted';
+import NumberedListIcon from 'material-ui/lib/svg-icons/editor/format-list-numbered';
+import CodeIcon from 'material-ui/lib/svg-icons/action/code';
 
 const BLOCK_TYPES = [
   // {label: 'H1', style: 'header-one'},
@@ -9,7 +13,7 @@ const BLOCK_TYPES = [
   // {label: 'H4', style: 'header-four'},
   // {label: 'H5', style: 'header-five'},
   // {label: 'H6', style: 'header-six'},
-  // {label: 'Blockquote', style: 'blockquote'},
+  {label: 'Blockquote', style: 'blockquote'},
   {label: 'UL', style: 'unordered-list-item'},
   {label: 'OL', style: 'ordered-list-item'},
   {label: 'Code Block', style: 'code-block'},
