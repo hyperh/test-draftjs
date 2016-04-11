@@ -9,7 +9,12 @@ export default class Widget extends Component {
     const WidgetType = Widgets[type];
     return (
       <span>
-        <WidgetType widget={widget} update={update} />
+        <WidgetType
+          widgetId={widget._id}
+          noteId={widget.noteId}
+          data={widget.data}
+          update={update}
+        />
         <span>
           <button onClick={removeWidget.bind(this, noteId, widgetId)}>Remove</button>
         </span>
