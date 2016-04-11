@@ -10,7 +10,12 @@ export default class Widget extends Component {
     const WidgetType = Widgets[type];
     return (
       <div style={{position: 'relative', display: 'flex'}}>
-        <WidgetType widget={widget} update={update} />
+        <WidgetType
+          widgetId={widget._id}
+          noteId={widget.noteId}
+          data={widget.data}
+          update={update}
+        />
         <div style={getRemoveStyle().container} onClick={removeWidget.bind(this, noteId, widgetId)}>
           <RemoveIcon style={getRemoveStyle().icon} color='rgba(0,0,0,0.5)'/>
         </div>

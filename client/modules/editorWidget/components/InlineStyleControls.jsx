@@ -1,5 +1,6 @@
 import React from 'react';
 import StyleButton from './StyleButton.jsx';
+import RemoveIcon from 'material-ui/lib/svg-icons/navigation/close';
 
 const INLINE_STYLES = [
   {label: 'Bold', style: 'BOLD'},

@@ -13,7 +13,7 @@ export default class DragHandle extends Component {
     return (
       <div style={handleStyle}>
         <svg height="26" width="24">
-          <g fill="rgba(0,0,0,0.4)">
+          <g fill="#EEE">
             <circle cx="4.5" cy="5" r="2.5" />
             <circle cx="12" cy="5" r="2.5" />
             <circle cx="4.5" cy="14" r="2.5" />

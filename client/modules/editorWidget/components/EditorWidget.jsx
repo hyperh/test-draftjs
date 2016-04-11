@@ -3,6 +3,7 @@ import R from 'ramda';
 import { Editor, EditorState, ContentState } from 'draft-js';
 import { convertToRaw, convertFromRaw } from 'draft-js';
 import { RichUtils } from 'draft-js';
+import Paper from 'material-ui/lib/paper';
 
 import BlockStyleControls from './BlockStyleControls.jsx';
 import InlineStyleControls from './InlineStyleControls.jsx';
@@ -11,8 +12,8 @@ export default class EditorWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: canSetStateFromProps(props.widget) ?
-        getNewState(EditorState.createEmpty(), props.widget.data) :
+      editorState: canSetStateFromProps(props.data) ?
+        getNewState(EditorState.createEmpty(), props.data) :
         EditorState.createEmpty()
     };
 
@@ -26,14 +27,14 @@ export default class EditorWidget extends React.Component {
 
   onChange(editorState) {
     const {
-      widget,
+      widgetId,
       update
     } = this.props;
 
     const contentState = editorState.getCurrentContent();
     const raw = convertToRaw(contentState);
 
-    update(widget._id, raw);
+    update(widgetId, raw);
     this.setState({editorState});
   }
 
@@ -90,7 +91,7 @@ export default class EditorWidget extends React.Component {
     }
 
     return (
-      <div>
+      <Paper style={{padding: '12px', width: '100%'}}>
         <BlockStyleControls
           editorState={this.state.editorState}
           onToggle={this.toggleBlockType}
@@ -114,7 +115,7 @@ export default class EditorWidget extends React.Component {
             spellCheck={true}
           />
         </div>
-      </div>
+      </Paper>
     );
   }
 }
@@ -136,9 +137,9 @@ function getBlockStyle(block) {
   }
 }
 
-function canSetStateFromProps(widget) {
-  const hasData = widget && !R.isEmpty(widget.data);
-  const keys = R.keys(widget.data);
+function canSetStateFromProps(data) {
+  const hasData = data && !R.isEmpty(data);
+  const keys = R.keys(data);
   const expectedKeys = [ 'entityMap', 'blocks' ];
   const hasAllKeys = R.isEmpty(R.difference(expectedKeys, keys));
 

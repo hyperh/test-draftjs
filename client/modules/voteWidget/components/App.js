@@ -15,14 +15,14 @@ import {updatePrompt, createOption, updateOptionLabel,
 export default class App extends React.Component {
   constructor(props) {
     super(props);
-    const {widget} = this.props;
+    const {data} = this.props;
 
     this.defaultState = {
       prompt: 'Type your question here',
       options: [],
     };
-    this.state = canSetStateFromProps(widget) ?
-      {prompt: widget.data.prompt, options: widget.data.options} :
+    this.state = canSetStateFromProps(data) ?
+      {prompt: data.prompt, options: data.options} :
       this.defaultState;
   }
 
@@ -38,10 +38,10 @@ export default class App extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const {widget} = nextProps;
+    const {data} = nextProps;
 
-    if (canSetStateFromProps(widget)) {
-      const {prompt, options} = widget.data;
+    if (canSetStateFromProps(data)) {
+      const {prompt, options} = data;
       this.setState({prompt, options});
       return;
     }
@@ -49,11 +49,11 @@ export default class App extends React.Component {
   }
 
   updateState(prompt, options) {
-    const {widget, update} = this.props;
+    const {widgetId, update} = this.props;
 
     this.setState({prompt, options});
     const data = {prompt, options};
-    update(widget._id, data);
+    update(widgetId, data);
   }
 
   render() {
@@ -75,10 +75,10 @@ export default class App extends React.Component {
   }
 }
 
-function canSetStateFromProps(widget) {
-  const hasData = widget && widget.data;
-  const hasPrompt = hasData && widget.data.prompt;
-  const hasOptions = hasData && widget.data.options;
+function canSetStateFromProps(data) {
+  const hasData = data;
+  const hasPrompt = hasData && data.prompt;
+  const hasOptions = hasData && data.options;
 
   return hasPrompt && hasOptions;
 }
