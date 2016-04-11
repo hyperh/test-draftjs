@@ -11,7 +11,7 @@ export default class EditorWidget extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorState: canGetNewState(props.widget) ?
+      editorState: canSetStateFromProps(props.widget) ?
         getNewState(EditorState.createEmpty(), props.widget.data) :
         EditorState.createEmpty()
     };
@@ -73,7 +73,7 @@ export default class EditorWidget extends React.Component {
   componentWillReceiveProps(nextProps) {
     const { widget } = nextProps;
 
-    if (canGetNewState(widget)) {
+    if (canSetStateFromProps(widget)) {
       this._injectChanges.bind(this)(this.state.editorState, widget.data);
     }
   }
@@ -136,7 +136,7 @@ function getBlockStyle(block) {
   }
 }
 
-function canGetNewState(widget) {
+function canSetStateFromProps(widget) {
   const hasData = widget && !R.isEmpty(widget.data);
   const keys = R.keys(widget.data);
   const expectedKeys = [ 'entityMap', 'blocks' ];
