@@ -9,11 +9,15 @@ class DraggableWidget extends Component {
   render() {
     const { isDragging, connectDragSource, connectDragPreview, connectDropTarget } = this.props;
     const { children } = this.props;
+    const containerStyle = {
+      opacity: isDragging ? 0 : 1,
+      display: 'flex',
+    };
 
     return connectDropTarget(connectDragPreview(
-      <div style={{ opacity: isDragging ? 0 : 1 }}>
+      <div style={containerStyle}>
         { connectDragSource(<div><DragHandle /></div>) } {/* div must be there */}
-        { children }
+        <div style={{flexGrow: '1'}}>{ children }</div>
       </div>
     ));
   }
