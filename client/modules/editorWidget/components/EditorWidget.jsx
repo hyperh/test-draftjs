@@ -105,6 +105,7 @@ export default class EditorWidget extends React.Component {
             editorState={this.state.editorState}
             onChange={this.onChange}
             placeholder={'Type something...'}
+            handleDrop={() => true} // Prevent other React DnD things from being dropped into it
 
             blockStyleFn={getBlockStyle}
             customStyleMap={styleMap}
